@@ -558,40 +558,4 @@ class VSSplitButtonExample extends StatelessWidget {
     );
   }
 
-  void _showSplitButtonInfoDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => VSDialog(
-        type: VSDialogType.summary,
-        message: 'The VS Split Button component combines a primary action button with a dropdown menu for related actions.',
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: AppSpacing.md),
-            Text(
-              'Key Features:',
-              style: AppTypography.bodyMediumSemibold,
-            ),
-            SizedBox(height: AppSpacing.sm),
-            Text(
-              '• Multiple variants: primary, secondary, danger, outlined\n'
-              '• Four sizes: xsmall, small, medium, large\n'
-              '• Customizable menu items with optional icons\n'
-              '• Separate callbacks for main action and dropdown\n'
-              '• Custom colors and disabled state support\n'
-              '• Overlay-based dropdown menu',
-              style: AppTypography.bodySmallRegular,
-            ),
-          ],
-        ),
-        actions: [
-          VSDialogAction(
-            label: 'Close',
-            onPressed: () {},
-          ),
-        ],
-      ),
-    );
-  }
 }

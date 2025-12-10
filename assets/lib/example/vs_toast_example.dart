@@ -9,7 +9,6 @@ class VSToastExample extends StatefulWidget {
 }
 
 class _VSToastExampleState extends State<VSToastExample> {
-  String _selectedPosition = 'top';
   String _selectedDuration = 'short';
 
   @override
@@ -224,7 +223,7 @@ class _VSToastExampleState extends State<VSToastExample> {
         // Toast Positions
         _buildToastGroup(
           title: 'Toast Positions',
-          description: 'Different positioning options for toast notifications',
+          description: 'Toast notifications appear at the top right of the screen',
           children: [
             Container(
               padding: EdgeInsets.all(AppSpacing.md),
@@ -240,14 +239,11 @@ class _VSToastExampleState extends State<VSToastExample> {
                     style: AppTypography.bodyMediumSemibold,
                   ),
                   SizedBox(height: AppSpacing.sm),
-                  Wrap(
-                    spacing: AppSpacing.xs,
-                    children: ['top', 'bottom', 'center'].map((position) => VSButton(
-                      label: position.toUpperCase(),
-                      onPressed: () => setState(() => _selectedPosition = position),
-                      size: VSButtonSize.small,
-                      variant: _selectedPosition == position ? VSButtonVariant.primary : VSButtonVariant.outlined,
-                    )).toList(),
+                  Text(
+                    'Toast always appears at top right',
+                    style: AppTypography.bodySmallRegular.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
                   ),
                   SizedBox(height: AppSpacing.md),
                   Wrap(
@@ -255,32 +251,11 @@ class _VSToastExampleState extends State<VSToastExample> {
                     runSpacing: AppSpacing.sm,
                     children: [
                       VSButton(
-                        label: 'Top Position',
+                        label: 'Top Right Position',
                         onPressed: () => _showToast(
                           context,
-                          message: 'This toast appears at the top of the screen.',
+                          message: 'This toast appears at the top right of the screen.',
                           type: VSToastType.info,
-                          position: Alignment.topRight,
-                        ),
-                        size: VSButtonSize.small,
-                      ),
-                      VSButton(
-                        label: 'Bottom Position',
-                        onPressed: () => _showToast(
-                          context,
-                          message: 'This toast appears at the bottom of the screen.',
-                          type: VSToastType.info,
-                          position: Alignment.bottomRight,
-                        ),
-                        size: VSButtonSize.small,
-                      ),
-                      VSButton(
-                        label: 'Center Position',
-                        onPressed: () => _showToast(
-                          context,
-                          message: 'This toast appears in the center of the screen.',
-                          type: VSToastType.info,
-                          position: Alignment.center,
                         ),
                         size: VSButtonSize.small,
                       ),
@@ -760,25 +735,6 @@ class _VSToastExampleState extends State<VSToastExample> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Position',
-                            style: AppTypography.bodySmallSemibold,
-                          ),
-                          SizedBox(height: AppSpacing.xs),
-                          Wrap(
-                            spacing: AppSpacing.xs,
-                            children: ['top', 'bottom', 'center'].map((pos) => VSButton(
-                              label: pos,
-                              onPressed: () => setState(() => _selectedPosition = pos),
-                              size: VSButtonSize.small,
-                              variant: _selectedPosition == pos ? VSButtonVariant.primary : VSButtonVariant.outlined,
-                            )).toList(),
-                          ),
-                        ],
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
                             'Duration',
                             style: AppTypography.bodySmallSemibold,
                           ),
@@ -807,7 +763,6 @@ class _VSToastExampleState extends State<VSToastExample> {
                           context,
                           message: 'Success toast with current settings.',
                           type: VSToastType.success,
-                          position: _getPositionFromString(_selectedPosition),
                           duration: _getDurationFromString(_selectedDuration),
                         ),
                         size: VSButtonSize.small,
@@ -819,7 +774,6 @@ class _VSToastExampleState extends State<VSToastExample> {
                           context,
                           message: 'Error toast with current settings.',
                           type: VSToastType.error,
-                          position: _getPositionFromString(_selectedPosition),
                           duration: _getDurationFromString(_selectedDuration),
                         ),
                         size: VSButtonSize.small,
@@ -831,7 +785,6 @@ class _VSToastExampleState extends State<VSToastExample> {
                           context,
                           message: 'Toast with action button using current settings.',
                           type: VSToastType.info,
-                          position: _getPositionFromString(_selectedPosition),
                           duration: _getDurationFromString(_selectedDuration),
                           actionLabel: 'Action',
                           onActionTap: () => _showActionDialog(context, 'Action executed!'),
@@ -885,7 +838,6 @@ class _VSToastExampleState extends State<VSToastExample> {
     BuildContext context, {
     required String message,
     required VSToastType type,
-    Alignment position = Alignment.topRight,
     Duration? duration,
     String? actionLabel,
     VoidCallback? onActionTap,
@@ -895,24 +847,10 @@ class _VSToastExampleState extends State<VSToastExample> {
       title: message,
       description: '',
       type: type,
-      alignment: position,
       duration: duration ?? const Duration(seconds: 5),
       actionLabel: actionLabel,
       onActionTap: onActionTap,
     );
-  }
-
-  Alignment _getPositionFromString(String position) {
-    switch (position) {
-      case 'top':
-        return Alignment.topRight;
-      case 'bottom':
-        return Alignment.bottomRight;
-      case 'center':
-        return Alignment.center;
-      default:
-        return Alignment.topRight;
-    }
   }
 
   Duration? _getDurationFromString(String duration) {
@@ -944,50 +882,4 @@ class _VSToastExampleState extends State<VSToastExample> {
     );
   }
 
-  void _showToastInfo(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => VSDialog(
-        type: VSDialogType.summary,
-        title: 'VS Toast Information',
-        message: '',
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'The VS Toast component provides non-intrusive notifications for user feedback with VS Design System styling.',
-              style: AppTypography.bodyMediumRegular,
-            ),
-            SizedBox(height: AppSpacing.md),
-            Text(
-              'Key Features:',
-              style: AppTypography.bodyMediumSemibold,
-            ),
-            SizedBox(height: AppSpacing.sm),
-            Text(
-              '• Multiple toast types (success, error, warning, info)\n'
-              '• Configurable positioning (top, bottom, center)\n'
-              '• Customizable duration or persistent display\n'
-              '• Optional action buttons for user interaction\n'
-              '• VS Design System styling integration\n'
-              '• Smooth animations and transitions\n'
-              '• Proper accessibility support\n'
-              '• Queue management for multiple toasts\n'
-              '• Auto-dismiss functionality\n'
-              '• Theme-aware color schemes\n'
-              '• Responsive layout design',
-              style: AppTypography.bodySmallRegular,
-            ),
-          ],
-        ),
-        actions: [
-          VSDialogAction(
-            label: 'Close',
-            onPressed: () {},
-          ),
-        ],
-      ),
-    );
-  }
 }

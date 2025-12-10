@@ -779,49 +779,4 @@ class _VSPageNotFoundExampleState extends State<VSPageNotFoundExample> {
     );
   }
 
-  void _showPageNotFoundInfo(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => VSDialog(
-        type: VSDialogType.summary,
-        title: 'VS Page Not Found Information',
-        message: '',
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'The VS Page Not Found component provides a standardized 404 error page layout with VS Design System styling and consistent messaging.',
-              style: AppTypography.bodyMediumRegular,
-            ),
-            SizedBox(height: AppSpacing.md),
-            Text(
-              'Key Features:',
-              style: AppTypography.bodyMediumSemibold,
-            ),
-            SizedBox(height: AppSpacing.sm),
-            Text(
-              '• Large 404 number display\n'
-              '• Clear error messaging\n'
-              '• Consistent VS Design System styling\n'
-              '• Centered layout with proper spacing\n'
-              '• Primary color accent for the 404 number\n'
-              '• Responsive design for different screen sizes\n'
-              '• Customizable background and text colors\n'
-              '• Integration with VS Typography system\n'
-              '• Proper semantic HTML structure\n'
-              '• Accessibility considerations',
-              style: AppTypography.bodySmallRegular,
-            ),
-          ],
-        ),
-        actions: [
-          VSDialogAction(
-            label: 'Close',
-            onPressed: () {},
-          ),
-        ],
-      ),
-    );
-  }
 }

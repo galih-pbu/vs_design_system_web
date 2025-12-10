@@ -849,49 +849,4 @@ class _VSPaginationExampleState extends State<VSPaginationExample> {
     return end > _totalItems ? _totalItems : end;
   }
 
-  void _showPaginationInfo(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => VSDialog(
-        type: VSDialogType.summary,
-        title: 'VS Pagination Information',
-        message: '',
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'The VS Pagination component provides navigation controls for paged content with item count display and customizable items per page options.',
-              style: AppTypography.bodyMediumRegular,
-            ),
-            SizedBox(height: AppSpacing.md),
-            Text(
-              'Key Features:',
-              style: AppTypography.bodyMediumSemibold,
-            ),
-            SizedBox(height: AppSpacing.sm),
-            Text(
-              '• Page navigation with previous/next buttons\n'
-              '• Current page indicator and total pages\n'
-              '• Item count display (showing X-Y of Z items)\n'
-              '• Items per page selector with customizable options\n'
-              '• Automatic calculation of total pages\n'
-              '• Callback functions for page and items per page changes\n'
-              '• VS Design System styling integration\n'
-              '• Responsive layout and proper spacing\n'
-              '• Accessibility support for keyboard navigation\n'
-              '• Consistent typography and color scheme',
-              style: AppTypography.bodySmallRegular,
-            ),
-          ],
-        ),
-        actions: [
-          VSDialogAction(
-            label: 'Close',
-            onPressed: () {},
-          ),
-        ],
-      ),
-    );
-  }
 }

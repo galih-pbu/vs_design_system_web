@@ -764,40 +764,4 @@ class _VSCircularPercentIndicatorExampleState
     _multiController.forward();
   }
 
-  void _showIndicatorInfoDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => VSDialog(
-        type: VSDialogType.summary,
-        message:
-            'The VS Circular Percent Indicator provides animated circular progress indicators with extensive customization options.',
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: AppSpacing.md),
-            Text('Key Features:', style: AppTypography.bodyMediumSemibold),
-            SizedBox(height: AppSpacing.sm),
-            Text(
-              '• Configurable radius, line width, and colors\n'
-              '• Multiple arc types: full, half, reversed\n'
-              '• Different stroke caps: butt, round, square\n'
-              '• Smooth animations with customizable duration and curves\n'
-              '• Support for headers, footers, and center widgets\n'
-              '• Linear gradient support\n'
-              '• Callback functions for animation events\n'
-              '• Widget indicators at progress end',
-              style: AppTypography.bodySmallRegular,
-            ),
-          ],
-        ),
-        actions: [
-          VSDialogAction(
-            label: 'Close',
-            onPressed: () {},
-          ),
-        ],
-      ),
-    );
-  }
 }

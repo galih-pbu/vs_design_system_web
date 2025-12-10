@@ -638,40 +638,4 @@ class _VSChipExampleState extends State<VSChipExample> {
     );
   }
 
-  void _showChipInfoDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => VSDialog(
-        type: VSDialogType.summary,
-        message: 'The VS Chip component provides compact elements for displaying status, tags, and filters with consistent design tokens.',
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: AppSpacing.md),
-            Text(
-              'Key Features:',
-              style: AppTypography.bodyMediumSemibold,
-            ),
-            SizedBox(height: AppSpacing.sm),
-            Text(
-              '• Three types: color (status), input (filters), approval (workflow)\n'
-              '• Six variants: primary, secondary, danger, success, warning, neutral\n'
-              '• Optional delete functionality for input chips\n'
-              '• Check indicators for approval chips\n'
-              '• Enabled/disabled states\n'
-              '• Compact design for tags and categories',
-              style: AppTypography.bodySmallRegular,
-            ),
-          ],
-        ),
-        actions: [
-          VSDialogAction(
-            label: 'Close',
-            onPressed: () {},
-          ),
-        ],
-      ),
-    );
-  }
 }

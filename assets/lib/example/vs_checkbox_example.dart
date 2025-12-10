@@ -10,7 +10,7 @@ class VSCheckboxExample extends StatefulWidget {
 
 class _VSCheckboxExampleState extends State<VSCheckboxExample> {
   // Basic checkbox states
-  bool _basicChecked = false;
+  bool _basicChecked = true;
   bool _basicUnchecked = false;
 
   // Size demonstrations
@@ -532,40 +532,4 @@ class _VSCheckboxExampleState extends State<VSCheckboxExample> {
     );
   }
 
-  void _showCheckboxInfoDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => VSDialog(
-        type: VSDialogType.summary,
-        message: 'The VS Checkbox component provides accessible checkbox controls with consistent design tokens.',
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: AppSpacing.md),
-            Text(
-              'Key Features:',
-              style: AppTypography.bodyMediumSemibold,
-            ),
-            SizedBox(height: AppSpacing.sm),
-            Text(
-              '• Three sizes: small, medium, large\n'
-              '• Optional text labels\n'
-              '• Enabled/disabled states\n'
-              '• Proper accessibility support\n'
-              '• Consistent with design system tokens\n'
-              '• Touch-friendly interaction areas',
-              style: AppTypography.bodySmallRegular,
-            ),
-          ],
-        ),
-        actions: [
-          VSDialogAction(
-            label: 'Close',
-            onPressed: () {},
-          ),
-        ],
-      ),
-    );
-  }
 }

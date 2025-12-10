@@ -1174,47 +1174,4 @@ class _VSDrawerExampleState extends State<VSDrawerExample> {
     );
   }
 
-  void _showDrawerInfo(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => VSDialog(
-        type: VSDialogType.summary,
-        title: 'VS Drawer Information',
-        message: '',
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'The VS Drawer component provides slide-out panels for forms and configuration with VS Design System styling.',
-              style: AppTypography.bodyMediumRegular,
-            ),
-            SizedBox(height: AppSpacing.md),
-            Text(
-              'Key Features:',
-              style: AppTypography.bodyMediumSemibold,
-            ),
-            SizedBox(height: AppSpacing.sm),
-            Text(
-              '• Two drawer types: standard dialog drawer and end drawer\n'
-              '• Multiple item types: text input and dropdown selections\n'
-              '• Optional info bar with custom colors and messages\n'
-              '• Configurable action buttons with different variants\n'
-              '• Form validation and state management\n'
-              '• Responsive design with proper modal behavior\n'
-              '• VS Design System integration\n'
-              '• Accessibility support',
-              style: AppTypography.bodySmallRegular,
-            ),
-          ],
-        ),
-        actions: [
-          VSDialogAction(
-            label: 'Close',
-            onPressed: () {},
-          ),
-        ],
-      ),
-    );
-  }
 }

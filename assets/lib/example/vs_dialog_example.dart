@@ -1,6 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:vs_design_system/vs_design_system.dart';
-import 'dart:async';
 
 class VSDialogExample extends StatefulWidget {
   const VSDialogExample({super.key});
@@ -28,16 +29,16 @@ class _VSDialogExampleState extends State<VSDialogExample> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: VSAppBar(
-        title: 'VS Dialog Examples',
-        actions: [
-          VSButton(
-            label: 'Info',
-            onPressed: () => _showDialogInfo(context),
-            size: VSButtonSize.small,
-          ),
-        ],
-      ),
+      // appBar: VSAppBar(
+      //   title: 'VS Dialog Examples',
+      //   actions: [
+      //     VSButton(
+      //       label: 'Info',
+      //       onPressed: () => _showDialogInfo(context),
+      //       size: VSButtonSize.small,
+      //     ),
+      //   ],
+      // ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(AppSpacing.lg),
         child: Column(

@@ -816,49 +816,4 @@ class _VSRadioButtonExampleState extends State<VSRadioButtonExample> {
     );
   }
 
-  void _showRadioButtonInfo(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => VSDialog(
-        type: VSDialogType.summary,
-        title: 'VS Radio Button Information',
-        message: '',
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'The VS Radio Button component provides single-selection controls for forms and settings with VS Design System styling.',
-              style: AppTypography.bodyMediumRegular,
-            ),
-            SizedBox(height: AppSpacing.md),
-            Text(
-              'Key Features:',
-              style: AppTypography.bodyMediumSemibold,
-            ),
-            SizedBox(height: AppSpacing.sm),
-            Text(
-              '• Single selection within a group\n'
-              '• Optional descriptions for better UX\n'
-              '• Disabled state support\n'
-              '• VS Design System styling integration\n'
-              '• Proper accessibility and keyboard navigation\n'
-              '• Consistent spacing and typography\n'
-              '• Support for custom labels and descriptions\n'
-              '• Form integration ready\n'
-              '• Responsive layout design\n'
-              '• Theme-aware color schemes',
-              style: AppTypography.bodySmallRegular,
-            ),
-          ],
-        ),
-        actions: [
-          VSDialogAction(
-            label: 'Close',
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-        ],
-      ),
-    );
-  }
 }

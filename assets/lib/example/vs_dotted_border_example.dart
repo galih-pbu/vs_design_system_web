@@ -759,45 +759,55 @@ class _VSDottedBorderExampleState extends State<VSDottedBorderExample> {
   }
 
   void _showAnimationDemo(BuildContext context) {
-    showDialog(
+    showGeneralDialog(
       context: context,
-      builder: (context) => Dialog(
-        backgroundColor: Colors.transparent,
-        child: VSDottedBorder(
-          borderType: VSBorderType.circle,
-          color: AppColors.primaryDefault,
-          strokeWidth: 4,
-          dashPattern: [12, 8],
-          padding: EdgeInsets.all(AppSpacing.lg),
-          animated: true,
-          animationDuration: const Duration(seconds: 2),
-          child: Container(
-            width: 150,
-            height: 150,
-            decoration: BoxDecoration(
-              color: AppColors.primaryBg.withValues(alpha: 0.2),
-              shape: BoxShape.circle,
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.animation,
-                  color: AppColors.primaryDefault,
-                  size: 48,
+      barrierDismissible: true,
+      barrierLabel: '',
+      barrierColor: Colors.black.withValues(alpha: 0.5),
+      pageBuilder: (context, animation, secondaryAnimation) {
+        return Material(
+          color: Colors.transparent,
+          child: Center(
+            child: VSDottedBorder(
+              borderType: VSBorderType.circle,
+              color: AppColors.primaryDefault,
+              strokeWidth: 4,
+              dashPattern: [12, 8],
+              padding: EdgeInsets.all(AppSpacing.lg),
+              animated: true,
+              animationDuration: const Duration(seconds: 2),
+              child: Container(
+                width: 150,
+                height: 150,
+                decoration: BoxDecoration(
+                  color: AppColors.primaryBg.withValues(alpha: 0.2),
+                  shape: BoxShape.circle,
                 ),
-                SizedBox(height: AppSpacing.sm),
-                Text(
-                  'Animated Border',
-                  style: AppTypography.bodyMediumSemibold.copyWith(
-                    color: AppColors.primaryDefault,
-                  ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.animation,
+                      color: AppColors.primaryDefault,
+                      size: 48,
+                    ),
+                    SizedBox(height: AppSpacing.sm),
+                    Text(
+                      'Animated Border',
+                      style: AppTypography.bodyMediumSemibold.copyWith(
+                        color: AppColors.primaryDefault,
+                      ),
+                      textAlign: TextAlign.center,
+                      softWrap: true,
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -817,47 +827,4 @@ class _VSDottedBorderExampleState extends State<VSDottedBorderExample> {
     );
   }
 
-  void _showBorderInfo(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => VSDialog(
-        type: VSDialogType.summary,
-        title: 'VS Dotted Border Information',
-        message: '',
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'The VS Dotted Border component provides flexible dotted/dashed border styling around any widget.',
-              style: AppTypography.bodyMediumRegular,
-            ),
-            SizedBox(height: AppSpacing.md),
-            Text(
-              'Key Features:',
-              style: AppTypography.bodyMediumSemibold,
-            ),
-            SizedBox(height: AppSpacing.sm),
-            Text(
-              '• Multiple border types: Rectangle, Rounded Rectangle, Circle, Oval\n'
-              '• Customizable dash patterns and stroke widths\n'
-              '• Color and gradient support\n'
-              '• Animation capabilities with configurable duration\n'
-              '• Padding control between border and content\n'
-              '• Stroke cap customization\n'
-              '• Custom path support for complex shapes\n'
-              '• VS Design System integration with consistent theming',
-              style: AppTypography.bodySmallRegular,
-            ),
-          ],
-        ),
-        actions: [
-          VSDialogAction(
-            label: 'Close',
-            onPressed: () {},
-          ),
-        ],
-      ),
-    );
-  }
 }

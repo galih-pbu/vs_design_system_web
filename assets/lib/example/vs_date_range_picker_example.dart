@@ -13,6 +13,23 @@ class _VSDateRangePickerExampleState extends State<VSDateRangePickerExample> {
   DateTimeRange? _selectedDateRange;
   DateTimeRange? _customDateRange;
   DateTimeRange? _restrictedDateRange;
+  DateTimeRange? _analyticsDateRange;
+  DateTimeRange? _bookingDateRange;
+  DateTimeRange? _reportDateRange;
+
+  // Controllers for input fields
+  final TextEditingController _basicController = TextEditingController();
+  final TextEditingController _customController = TextEditingController();
+  final TextEditingController _restrictedController = TextEditingController();
+  final TextEditingController _analyticsController = TextEditingController();
+  final TextEditingController _bookingController = TextEditingController();
+  final TextEditingController _reportController = TextEditingController();
+
+  // Loading and validation states
+  bool _isBookingLoading = false;
+  bool _isReportLoading = false;
+  String? _bookingError;
+  String? _reportError;
 
   // Preset ranges
   final DateTime _today = DateTime.now();
@@ -38,6 +55,31 @@ class _VSDateRangePickerExampleState extends State<VSDateRangePickerExample> {
       start: DateTime(_today.year, _today.month - 1, 1),
       end: DateTime(_today.year, _today.month, 0),
     );
+
+    // Initialize with default ranges
+    _analyticsDateRange = DateTimeRange(
+      start: _today.subtract(const Duration(days: 7)),
+      end: _today,
+    );
+    _analyticsController.text = '${_formatDate(_analyticsDateRange!.start)} - ${_formatDate(_analyticsDateRange!.end)}';
+
+    // Initialize other controllers with placeholder text
+    _basicController.text = '';
+    _customController.text = '';
+    _restrictedController.text = '';
+    _bookingController.text = '${_formatDate(_today.add(const Duration(days: 30)))} - ${_formatDate(_today.add(const Duration(days: 37)))}';
+    _reportController.text = '${_formatDate(DateTime(_today.year, _today.month, 1))} - ${_formatDate(DateTime(_today.year, _today.month + 1, 0))}';
+  }
+
+  @override
+  void dispose() {
+    _basicController.dispose();
+    _customController.dispose();
+    _restrictedController.dispose();
+    _analyticsController.dispose();
+    _bookingController.dispose();
+    _reportController.dispose();
+    super.dispose();
   }
 
   @override
@@ -45,17 +87,11 @@ class _VSDateRangePickerExampleState extends State<VSDateRangePickerExample> {
     return Scaffold(
       // appBar: VSAppBar(
       //   title: 'VS Date Range Picker Examples',
-      //   actions: [
-      //     VSButton(
-      //       label: 'Info',
-      //       onPressed: () => _showPickerInfoDialog(context),
-      //       size: VSButtonSize.small,
-      //     ),
-      //   ],
       // ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(AppSpacing.lg),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildSection(
@@ -102,62 +138,65 @@ class _VSDateRangePickerExampleState extends State<VSDateRangePickerExample> {
         // Basic Date Range Picker
         _buildPickerGroup(
           title: 'Basic Date Range Picker',
-          description: 'Simple date range picker with default styling',
+          description: 'Simple date range picker with default styling and minimal parameters',
           children: [
             Container(
+              width: double.infinity,
               padding: EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
                 color: AppColors.neutral100,
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Select Date Range',
-                    style: AppTypography.bodyMediumSemibold,
-                  ),
-                  SizedBox(height: AppSpacing.sm),
-                  VSButton(
-                    label: _selectedDateRange != null
-                        ? '${_formatDate(_selectedDateRange!.start)} - ${_formatDate(_selectedDateRange!.end)}'
-                        : 'Choose Date Range',
-                    onPressed: () => _showBasicPicker(context),
-                    variant: VSButtonVariant.outlined,
-                    rightIcon: Icons.calendar_today,
-                  ),
-                  if (_selectedDateRange != null) ...[
-                    SizedBox(height: AppSpacing.sm),
-                    Row(
-                      children: [
-                        const VSBadge(
-                          label: 'SELECTED',
-                          variant: VSBadgeVariant.success,
-                        ),
-                        SizedBox(width: AppSpacing.sm),
-                        Text(
-                          '${_selectedDateRange!.duration.inDays + 1} days selected',
-                          style: AppTypography.bodySmallRegular.copyWith(
-                            color: AppColors.textSecondary,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ],
+              child: VSDateRangePicker(
+                title: 'Select Date Range',
+                hint: 'Choose your preferred date range',
+                controller: _basicController,
+                placeHolder: 'No date selected',
+                onRangeSelected: (range) {
+                  setState(() => _selectedDateRange = range);
+                },
+                dateShowFormat: 'MMM dd, yyyy',
+                height: 48,
               ),
             ),
+            if (_selectedDateRange != null) ...[
+              SizedBox(height: AppSpacing.sm),
+              Container(
+                padding: EdgeInsets.all(AppSpacing.sm),
+                decoration: BoxDecoration(
+                  color: AppColors.successBg.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(4),
+                  border: Border.all(color: AppColors.successDefault.withValues(alpha: 0.3)),
+                ),
+                child: Row(
+                  children: [
+                    const VSBadge(
+                      label: 'SELECTED',
+                      variant: VSBadgeVariant.success,
+                    ),
+                    SizedBox(width: AppSpacing.sm),
+                    Text(
+                      '${_selectedDateRange!.duration.inDays + 1} days selected',
+                      style: AppTypography.bodySmallRegular.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ],
         ),
 
         SizedBox(height: AppSpacing.lg),
 
-        // Preset Ranges
+        // Preset Ranges with Input Field
         _buildPickerGroup(
-          title: 'Preset Date Ranges',
-          description: 'Quick selection with predefined date ranges',
+          title: 'Date Range Picker with Validation',
+          description: 'Input field with preset ranges, validation, and error handling',
           children: [
             Container(
+              width: double.infinity,
               padding: EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
                 color: AppColors.neutral100,
@@ -167,7 +206,7 @@ class _VSDateRangePickerExampleState extends State<VSDateRangePickerExample> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Quick Select',
+                    'Quick Select with Validation',
                     style: AppTypography.bodyMediumSemibold,
                   ),
                   SizedBox(height: AppSpacing.sm),
@@ -182,34 +221,44 @@ class _VSDateRangePickerExampleState extends State<VSDateRangePickerExample> {
                     ],
                   ),
                   SizedBox(height: AppSpacing.sm),
-                  Container(
-                    padding: EdgeInsets.all(AppSpacing.sm),
-                    decoration: BoxDecoration(
-                      color: AppColors.neutral0,
-                      borderRadius: BorderRadius.circular(4),
-                      border: Border.all(color: AppColors.neutral200),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(Icons.calendar_today, size: 16, color: AppColors.textSecondary),
-                        SizedBox(width: AppSpacing.sm),
-                        Expanded(
-                          child: Text(
-                            _customDateRange != null
-                                ? '${_formatDate(_customDateRange!.start)} - ${_formatDate(_customDateRange!.end)}'
-                                : 'No range selected',
-                            style: AppTypography.bodySmallRegular,
-                          ),
-                        ),
-                        if (_customDateRange != null)
-                          VSButton(
-                            label: 'Change',
-                            onPressed: () => _showCustomPicker(context),
-                            size: VSButtonSize.xsmall,
-                            variant: VSButtonVariant.text,
-                          ),
-                      ],
-                    ),
+                  VSDateRangePicker(
+                    title: 'Selected Range',
+                    hint: 'Select or enter date range',
+                    controller: _customController,
+                    require: true,
+                    initialDateRange: _customDateRange,
+                    minDate: DateTime(_today.year, _today.month - 3, 1),
+                    maxDate: DateTime(_today.year, _today.month + 3, 0),
+                    dateValidatorFunction: (range) {
+                      if (range == null) return 'Please select a date range';
+                      if (range.duration.inDays > 90) return 'Maximum range is 90 days';
+                      if (range.duration.inDays < 1) return 'Minimum range is 1 day';
+                      return null;
+                    },
+                    onRangeSelected: (range) {
+                      setState(() => _customDateRange = range);
+                    },
+                    onDateChanged: (range) {
+                      // Handle date changes
+                      VSToastService.showToast(
+                        context,
+                        title: 'Date Changed',
+                        description: 'Range updated to: ${_formatDate(range.start)} - ${_formatDate(range.end)}',
+                        type: VSToastType.info,
+                      );
+                    },
+                    dateSaveCallBack: (range) {
+                      // Handle save callback
+                      VSToastService.showToast(
+                        context,
+                        title: 'Range Saved',
+                        description: 'Date range has been saved successfully',
+                        type: VSToastType.success,
+                      );
+                    },
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                    height: 48,
                   ),
                 ],
               ),
@@ -219,12 +268,13 @@ class _VSDateRangePickerExampleState extends State<VSDateRangePickerExample> {
 
         SizedBox(height: AppSpacing.lg),
 
-        // Restricted Date Range
+        // Restricted Date Range with Loading
         _buildPickerGroup(
-          title: 'Restricted Date Range',
-          description: 'Date picker with minimum and maximum date constraints',
+          title: 'Restricted Date Range with Loading',
+          description: 'Date picker with constraints, loading states, and validation feedback',
           children: [
             Container(
+              width: double.infinity,
               padding: EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
                 color: AppColors.neutral100,
@@ -254,15 +304,51 @@ class _VSDateRangePickerExampleState extends State<VSDateRangePickerExample> {
                     ),
                   ),
                   SizedBox(height: AppSpacing.sm),
-                  VSButton(
-                    label: _restrictedDateRange != null
-                        ? '${_formatDate(_restrictedDateRange!.start)} - ${_formatDate(_restrictedDateRange!.end)}'
-                        : 'Select Booking Dates',
-                    onPressed: () => _showRestrictedPicker(context),
-                    variant: VSButtonVariant.outlined,
-                    rightIcon: Icons.event_available,
+                  VSDateRangePicker(
+                    title: 'Check-in / Check-out',
+                    hint: 'Select your booking dates',
+                    controller: _restrictedController,
+                    require: true,
+                    enable: !_isBookingLoading,
+                    isLoading: _isBookingLoading,
+                    loadingDesc: 'Checking availability...',
+                    errorNotes: _bookingError,
+                    minDate: _today,
+                    maxDate: _today.add(const Duration(days: 30)),
+                    initialDateRange: _restrictedDateRange,
+                    dateValidatorFunction: (range) {
+                      if (range == null) return 'Please select check-in and check-out dates';
+                      if (range.duration.inDays < 1) return 'Minimum stay is 1 night';
+                      if (range.duration.inDays > 14) return 'Maximum stay is 14 nights';
+                      if (range.start.isBefore(_today)) return 'Check-in cannot be in the past';
+                      return null;
+                    },
+                    onRangeSelected: (range) async {
+                      setState(() {
+                        _isBookingLoading = true;
+                        _bookingError = null;
+                      });
+
+                      // Simulate API call
+                      await Future.delayed(const Duration(seconds: 2));
+
+                      setState(() {
+                        _restrictedDateRange = range;
+                        _isBookingLoading = false;
+                      });
+                    },
+                    onClear: () {
+                      setState(() {
+                        _restrictedDateRange = null;
+                        _bookingError = null;
+                      });
+                      _restrictedController.clear();
+                    },
+                    dateShowFormat: 'MMM dd, yyyy',
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    height: 48,
                   ),
-                  if (_restrictedDateRange != null) ...[
+                  if (_restrictedDateRange != null && !_isBookingLoading) ...[
                     SizedBox(height: AppSpacing.sm),
                     Container(
                       padding: EdgeInsets.all(AppSpacing.sm),
@@ -295,12 +381,13 @@ class _VSDateRangePickerExampleState extends State<VSDateRangePickerExample> {
 
         SizedBox(height: AppSpacing.lg),
 
-        // Custom Styled Picker
+        // Custom Styled Picker with Report Generation
         _buildPickerGroup(
-          title: 'Custom Styled Picker',
-          description: 'Date picker with custom text styles and colors',
+          title: 'Report Generation with Custom Styling',
+          description: 'Advanced date picker with custom formatting, loading states, and report generation',
           children: [
             Container(
+              width: double.infinity,
               padding: EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
                 color: AppColors.neutral100,
@@ -309,17 +396,122 @@ class _VSDateRangePickerExampleState extends State<VSDateRangePickerExample> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Report Period',
-                    style: AppTypography.bodyMediumSemibold,
+                  Row(
+                    children: [
+                      Text(
+                        'Report Period',
+                        style: AppTypography.bodyMediumSemibold,
+                      ),
+                      const Spacer(),
+                      if (_isReportLoading)
+                        const VSBadge(
+                          label: 'GENERATING',
+                          variant: VSBadgeVariant.warning,
+                        )
+                      else
+                        const VSBadge(
+                          label: 'READY',
+                          variant: VSBadgeVariant.success,
+                        ),
+                    ],
                   ),
                   SizedBox(height: AppSpacing.sm),
-                  VSButton(
-                    label: 'Generate Report',
-                    onPressed: () => _showStyledPicker(context),
-                    leftIcon: Icons.bar_chart,
-                    variant: VSButtonVariant.primary,
+                  VSDateRangePicker(
+                    title: 'Generate Report For',
+                    hint: 'Select period for detailed report',
+                    controller: _reportController,
+                    require: true,
+                    enable: !_isReportLoading,
+                    isLoading: _isReportLoading,
+                    loadingDesc: 'Generating comprehensive report...',
+                    errorNotes: _reportError,
+                    initialDateRange: _reportDateRange ?? DateTimeRange(
+                      start: DateTime(_today.year, _today.month, 1),
+                      end: DateTime(_today.year, _today.month + 1, 0),
+                    ),
+                    minDate: DateTime(_today.year - 1, 1, 1),
+                    maxDate: _today,
+                    dateValidatorFunction: (range) {
+                      if (range == null) return 'Please select a report period';
+                      if (range.duration.inDays > 365) return 'Report period cannot exceed 1 year';
+                      if (range.start.isAfter(_today)) return 'Start date cannot be in the future';
+                      return null;
+                    },
+                    onRangeSelected: (range) async {
+                      setState(() {
+                        _isReportLoading = true;
+                        _reportError = null;
+                      });
+
+                      // Simulate report generation
+                      await Future.delayed(const Duration(seconds: 3));
+
+                      if (mounted) {
+                        setState(() {
+                          _reportDateRange = range;
+                          _isReportLoading = false;
+                        });
+
+                        // Show success message
+                        VSToastService.showToast(
+                          context,
+                          title: 'Report Generated',
+                          description: 'Report created for ${range.duration.inDays + 1} days',
+                          type: VSToastType.success,
+                        );
+                      }
+                    },
+                    onClear: () {
+                      setState(() {
+                        _reportDateRange = null;
+                        _reportError = null;
+                      });
+                      _reportController.clear();
+                    },
+                    dateShowFormat: 'MMMM dd, yyyy',
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+                    height: 56,
                   ),
+                  if (_reportDateRange != null && !_isReportLoading) ...[
+                    SizedBox(height: AppSpacing.sm),
+                    Container(
+                      padding: EdgeInsets.all(AppSpacing.sm),
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryBg.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(4),
+                        border: Border.all(color: AppColors.primaryDefault.withValues(alpha: 0.3)),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.description, size: 16, color: AppColors.primaryDefault),
+                          SizedBox(width: AppSpacing.sm),
+                          Expanded(
+                            child: Text(
+                              'Report generated: ${_reportDateRange!.duration.inDays + 1} days of data',
+                              style: AppTypography.bodySmallRegular.copyWith(
+                                color: AppColors.primaryDefault,
+                              ),
+                            ),
+                          ),
+                          VSButton(
+                            label: 'Download',
+                            onPressed: () {
+                              // Handle download
+                              VSToastService.showToast(
+                                context,
+                                title: 'Download Started',
+                                description: 'Your report download has begun',
+                                type: VSToastType.info,
+                              );
+                            },
+                            size: VSButtonSize.xsmall,
+                            variant: VSButtonVariant.text,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -333,8 +525,9 @@ class _VSDateRangePickerExampleState extends State<VSDateRangePickerExample> {
           title: 'Real-world Usage Examples',
           description: 'Common patterns for using date range pickers in applications',
           children: [
-            // Analytics Dashboard
+            // Analytics Dashboard with Real-time Updates
             Container(
+              width: double.infinity,
               padding: EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
                 color: AppColors.neutral100,
@@ -359,32 +552,36 @@ class _VSDateRangePickerExampleState extends State<VSDateRangePickerExample> {
                     ],
                   ),
                   SizedBox(height: AppSpacing.sm),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Date Range',
-                              style: AppTypography.bodySmallSemibold,
-                            ),
-                            Text(
-                              'Last 7 days',
-                              style: AppTypography.bodySmallRegular.copyWith(
-                                color: AppColors.textSecondary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      VSButton(
-                        label: 'Change',
-                        onPressed: () => _showAnalyticsPicker(context),
-                        size: VSButtonSize.small,
-                        variant: VSButtonVariant.outlined,
-                      ),
-                    ],
+                  VSDateRangePicker(
+                    title: 'Analytics Period',
+                    hint: 'Select date range for analytics',
+                    controller: _analyticsController,
+                    initialDateRange: _analyticsDateRange,
+                    minDate: DateTime(_today.year - 2, 1, 1),
+                    maxDate: _today,
+                    dateValidatorFunction: (range) {
+                      if (range == null) return 'Please select an analytics period';
+                      if (range.duration.inDays > 365) return 'Maximum analytics period is 1 year';
+                      return null;
+                    },
+                    onRangeSelected: (range) {
+                      setState(() => _analyticsDateRange = range);
+                      // Trigger analytics refresh
+                      _refreshAnalytics(context, range);
+                    },
+                    onDateChanged: (range) {
+                      // Real-time updates as user changes dates
+                      VSToastService.showToast(
+                        context,
+                        title: 'Analytics Updating',
+                        description: 'Range: ${_formatDate(range.start)} - ${_formatDate(range.end)}',
+                        type: VSToastType.info,
+                        duration: const Duration(seconds: 2),
+                      );
+                    },
+                    dateShowFormat: 'MMM dd, yyyy',
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    height: 48,
                   ),
                   SizedBox(height: AppSpacing.sm),
                   Row(
@@ -402,8 +599,9 @@ class _VSDateRangePickerExampleState extends State<VSDateRangePickerExample> {
 
             SizedBox(height: AppSpacing.md),
 
-            // Travel Booking
+            // Travel Booking with Flexible Dates
             Container(
+              width: double.infinity,
               padding: EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
                 color: AppColors.neutral100,
@@ -420,34 +618,38 @@ class _VSDateRangePickerExampleState extends State<VSDateRangePickerExample> {
                         'Flight Search',
                         style: AppTypography.bodyMediumSemibold,
                       ),
+                      const Spacer(),
+                      const VSBadge(
+                        label: 'FLEXIBLE',
+                        variant: VSBadgeVariant.primary,
+                      ),
                     ],
                   ),
                   SizedBox(height: AppSpacing.sm),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Departure - Return',
-                              style: AppTypography.bodySmallSemibold,
-                            ),
-                            Text(
-                              'Select travel dates',
-                              style: AppTypography.bodySmallRegular.copyWith(
-                                color: AppColors.textSecondary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      VSButton(
-                        label: 'Select Dates',
-                        onPressed: () => _showTravelPicker(context),
-                        size: VSButtonSize.small,
-                      ),
-                    ],
+                  VSDateRangePicker(
+                    title: 'Departure - Return',
+                    hint: 'Select your travel dates',
+                    controller: _bookingController,
+                    initialDateRange: _bookingDateRange ?? DateTimeRange(
+                      start: _today.add(const Duration(days: 30)),
+                      end: _today.add(const Duration(days: 37)),
+                    ),
+                    minDate: _today,
+                    maxDate: _today.add(const Duration(days: 365)),
+                    dateValidatorFunction: (range) {
+                      if (range == null) return 'Please select travel dates';
+                      if (range.duration.inDays < 1) return 'Return date must be after departure';
+                      if (range.duration.inDays > 30) return 'Maximum trip length is 30 days';
+                      return null;
+                    },
+                    onRangeSelected: (range) {
+                      setState(() => _bookingDateRange = range);
+                      // Search for flights
+                      _searchFlights(context, range);
+                    },
+                    dateShowFormat: 'EEE, MMM dd',
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    height: 48,
                   ),
                   SizedBox(height: AppSpacing.sm),
                   Wrap(
@@ -459,14 +661,32 @@ class _VSDateRangePickerExampleState extends State<VSDateRangePickerExample> {
                       const VSChip(label: 'Economy', type: VSChipType.color, variant: VSChipVariant.neutral),
                     ],
                   ),
+                  if (_bookingDateRange != null) ...[
+                    SizedBox(height: AppSpacing.sm),
+                    Container(
+                      padding: EdgeInsets.all(AppSpacing.sm),
+                      decoration: BoxDecoration(
+                        color: AppColors.secondaryBg.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(4),
+                        border: Border.all(color: AppColors.secondaryDefault.withValues(alpha: 0.3)),
+                      ),
+                      child: Text(
+                        '${_bookingDateRange!.duration.inDays + 1} day trip • Searching flights...',
+                        style: AppTypography.bodySmallRegular.copyWith(
+                          color: AppColors.secondaryDefault,
+                        ),
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),
 
             SizedBox(height: AppSpacing.md),
 
-            // Project Timeline
+            // Project Timeline Management
             Container(
+              width: double.infinity,
               padding: EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
                 color: AppColors.neutral100,
@@ -491,6 +711,31 @@ class _VSDateRangePickerExampleState extends State<VSDateRangePickerExample> {
                     ],
                   ),
                   SizedBox(height: AppSpacing.sm),
+                  VSDateRangePicker(
+                    title: 'Project Duration',
+                    hint: 'Set project start and end dates',
+                    controller: TextEditingController(),
+                    initialDateRange: DateTimeRange(
+                      start: DateTime(_today.year, 3, 1),
+                      end: DateTime(_today.year, 6, 30),
+                    ),
+                    minDate: DateTime(_today.year, 1, 1),
+                    maxDate: DateTime(_today.year, 12, 31),
+                    dateValidatorFunction: (range) {
+                      if (range == null) return 'Please set project dates';
+                      if (range.duration.inDays < 30) return 'Minimum project duration is 30 days';
+                      if (range.duration.inDays > 365) return 'Maximum project duration is 1 year';
+                      return null;
+                    },
+                    onRangeSelected: (range) {
+                      // Update project timeline
+                      _updateProjectTimeline(context, range);
+                    },
+                    dateShowFormat: 'MMM dd, yyyy',
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    height: 48,
+                  ),
+                  SizedBox(height: AppSpacing.sm),
                   Container(
                     padding: EdgeInsets.all(AppSpacing.sm),
                     decoration: BoxDecoration(
@@ -505,7 +750,7 @@ class _VSDateRangePickerExampleState extends State<VSDateRangePickerExample> {
                             Icon(Icons.flag, size: 16, color: AppColors.successDefault),
                             SizedBox(width: AppSpacing.sm),
                             Text(
-                              'Start Date: March 1, 2024',
+                              'Start: March 1, ${_today.year}',
                               style: AppTypography.bodySmallRegular,
                             ),
                           ],
@@ -516,21 +761,13 @@ class _VSDateRangePickerExampleState extends State<VSDateRangePickerExample> {
                             Icon(Icons.flag_outlined, size: 16, color: AppColors.dangerDefault),
                             SizedBox(width: AppSpacing.sm),
                             Text(
-                              'End Date: June 30, 2024',
+                              'End: June 30, ${_today.year}',
                               style: AppTypography.bodySmallRegular,
                             ),
                           ],
                         ),
                       ],
                     ),
-                  ),
-                  SizedBox(height: AppSpacing.sm),
-                  VSButton(
-                    label: 'Adjust Timeline',
-                    onPressed: () => _showProjectPicker(context),
-                    size: VSButtonSize.small,
-                    variant: VSButtonVariant.outlined,
-                    leftIcon: Icons.edit_calendar,
                   ),
                 ],
               ),
@@ -585,7 +822,14 @@ class _VSDateRangePickerExampleState extends State<VSDateRangePickerExample> {
                       ),
                       VSButton(
                         label: 'Edit Period',
-                        onPressed: () => _showExpensePicker(context),
+                        onPressed: () {
+                          VSToastService.showToast(
+                            context,
+                            title: 'Report Period',
+                            description: 'January 1 - January 31, 2024 (fixed period for demo)',
+                            type: VSToastType.info,
+                          );
+                        },
                         size: VSButtonSize.small,
                         variant: VSButtonVariant.outlined,
                       ),
@@ -629,6 +873,7 @@ class _VSDateRangePickerExampleState extends State<VSDateRangePickerExample> {
     required List<Widget> children,
   }) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
@@ -658,7 +903,15 @@ class _VSDateRangePickerExampleState extends State<VSDateRangePickerExample> {
           _customDateRange = range;
         });
         if (range != null) {
-          _showActionDialog(context, 'Selected: ${label} (${_formatDate(range.start)} - ${_formatDate(range.end)})');
+          _customController.text = '${_formatDate(range.start)} - ${_formatDate(range.end)}';
+          VSToastService.showToast(
+            context,
+            title: 'Preset Selected',
+            description: 'Selected: $label (${_formatDate(range.start)} - ${_formatDate(range.end)})',
+            type: VSToastType.info,
+          );
+        } else {
+          _customController.clear();
         }
       },
       size: VSButtonSize.small,
@@ -667,7 +920,7 @@ class _VSDateRangePickerExampleState extends State<VSDateRangePickerExample> {
   }
 
   Widget _buildMetricCard(String title, String value, Color color) {
-    return Expanded(
+    return Flexible(
       child: Container(
         padding: EdgeInsets.all(AppSpacing.sm),
         decoration: BoxDecoration(
@@ -693,327 +946,38 @@ class _VSDateRangePickerExampleState extends State<VSDateRangePickerExample> {
     );
   }
 
-  void _showBasicPicker(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => VSDialog(
-        type: VSDialogType.input,
-        message: 'Select Date Range',
-        content: SizedBox(
-          height: 400,
-          width: 400,
-          child: VSDateRangePicker(
-            onRangeSelected: (range) {
-              setState(() => _selectedDateRange = range);
-              Navigator.of(context).pop();
-              _showActionDialog(context, 'Date range selected: ${_formatDate(range.start)} - ${_formatDate(range.end)}');
-            },
-          ),
-        ),
-        actions: [
-          VSDialogAction(
-            label: 'Cancel',
-            onPressed: () {},
-          ),
-        ],
-      ),
+  // Helper Methods
+  void _refreshAnalytics(BuildContext context, DateTimeRange range) {
+    // Simulate analytics refresh
+    VSToastService.showToast(
+      context,
+      title: 'Analytics Refreshed',
+      description: 'Data updated for: ${_formatDate(range.start)} - ${_formatDate(range.end)}',
+      type: VSToastType.success,
     );
   }
 
-  void _showCustomPicker(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => VSDialog(
-        type: VSDialogType.input,
-        message: 'Custom Date Range',
-        content: SizedBox(
-          height: 400,
-          width: 400,
-          child: VSDateRangePicker(
-            initialDateRange: _customDateRange,
-            onRangeSelected: (range) {
-              setState(() => _customDateRange = range);
-              Navigator.of(context).pop();
-              _showActionDialog(context, 'Custom range updated: ${_formatDate(range.start)} - ${_formatDate(range.end)}');
-            },
-          ),
-        ),
-        actions: [
-          VSDialogAction(
-            label: 'Cancel',
-            onPressed: () {},
-          ),
-        ],
-      ),
+  void _searchFlights(BuildContext context, DateTimeRange range) {
+    // Simulate flight search
+    VSToastService.showToast(
+      context,
+      title: 'Flight Search',
+      description: 'Searching flights for: ${_formatDate(range.start)} - ${_formatDate(range.end)}',
+      type: VSToastType.info,
     );
   }
 
-  void _showRestrictedPicker(BuildContext context) {
-    final minDate = DateTime.now();
-    final maxDate = minDate.add(const Duration(days: 30));
-
-    showDialog(
-      context: context,
-      builder: (context) => VSDialog(
-        type: VSDialogType.input,
-        message: 'Please select your booking dates from the available range.',
-        title: 'Select Booking Dates',
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'Available dates: ${minDate.day}/${minDate.month} - ${maxDate.day}/${maxDate.month}',
-              style: AppTypography.bodySmallRegular.copyWith(
-                color: AppColors.textSecondary,
-              ),
-            ),
-            SizedBox(height: AppSpacing.sm),
-            SizedBox(
-              height: 400,
-              width: 400,
-              child: VSDateRangePicker(
-                minDate: minDate,
-                maxDate: maxDate,
-                onRangeSelected: (range) {
-                  setState(() => _restrictedDateRange = range);
-                  Navigator.of(context).pop();
-                  _showActionDialog(context, 'Booking confirmed: ${_formatDate(range.start)} - ${_formatDate(range.end)}');
-                },
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          VSDialogAction(
-            label: 'Cancel',
-            onPressed: () {},
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showStyledPicker(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => VSDialog(
-        type: VSDialogType.input,
-        message: 'Select the date range for your report.',
-        title: 'Report Date Range',
-        content: SizedBox(
-          height: 400,
-          width: 400,
-          child: VSDateRangePicker(
-            daysOfTheWeekTextStyle: AppTypography.bodySmallSemibold.copyWith(
-              color: AppColors.primaryDefault,
-            ),
-            enabledCellsTextStyle: AppTypography.bodyMediumRegular,
-            currentDateTextStyle: AppTypography.bodyMediumSemibold.copyWith(
-              color: AppColors.secondaryDefault,
-            ),
-            selectedCellsTextStyle: AppTypography.bodyMediumSemibold.copyWith(
-              color: AppColors.neutral0,
-            ),
-            leadingDateTextStyle: AppTypography.h5.copyWith(
-              color: AppColors.primaryDefault,
-            ),
-            onRangeSelected: (range) {
-              Navigator.of(context).pop();
-              _showActionDialog(context, 'Report will be generated for: ${_formatDate(range.start)} - ${_formatDate(range.end)}');
-            },
-          ),
-        ),
-        actions: [
-          VSDialogAction(
-            label: 'Cancel',
-            onPressed: () {},
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showAnalyticsPicker(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => VSDialog(
-        type: VSDialogType.input,
-        message: 'Select the date range for analytics.',
-        title: 'Analytics Date Range',
-        content: SizedBox(
-          height: 400,
-          child: VSDateRangePicker(
-            initialDateRange: DateTimeRange(
-              start: DateTime.now().subtract(const Duration(days: 7)),
-              end: DateTime.now(),
-            ),
-            onRangeSelected: (range) {
-              Navigator.of(context).pop();
-              _showActionDialog(context, 'Analytics updated for: ${_formatDate(range.start)} - ${_formatDate(range.end)}');
-            },
-          ),
-        ),
-        actions: [
-          VSDialogAction(
-            label: 'Cancel',
-            onPressed: () {},
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showTravelPicker(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => VSDialog(
-        type: VSDialogType.input,
-        message: 'Choose your travel dates.',
-        title: 'Select Travel Dates',
-        content: SizedBox(
-          height: 400,
-          child: VSDateRangePicker(
-            minDate: DateTime.now(),
-            maxDate: DateTime.now().add(const Duration(days: 365)),
-            onRangeSelected: (range) {
-              Navigator.of(context).pop();
-              _showActionDialog(context, 'Flight search for: ${_formatDate(range.start)} - ${_formatDate(range.end)}');
-            },
-          ),
-        ),
-        actions: [
-          VSDialogAction(
-            label: 'Cancel',
-            onPressed: () {},
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showProjectPicker(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => VSDialog(
-        type: VSDialogType.input,
-        message: 'Adjust the project timeline dates.',
-        title: 'Adjust Project Timeline',
-        content: SizedBox(
-          height: 400,
-          child: VSDateRangePicker(
-            initialDateRange: DateTimeRange(
-              start: DateTime(2024, 3, 1),
-              end: DateTime(2024, 6, 30),
-            ),
-            minDate: DateTime(2024, 1, 1),
-            maxDate: DateTime(2024, 12, 31),
-            onRangeSelected: (range) {
-              Navigator.of(context).pop();
-              _showActionDialog(context, 'Project timeline updated: ${_formatDate(range.start)} - ${_formatDate(range.end)}');
-            },
-          ),
-        ),
-        actions: [
-          VSDialogAction(
-            label: 'Cancel',
-            onPressed: () {},
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showExpensePicker(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => VSDialog(
-        type: VSDialogType.input,
-        message: 'Select the period for the expense report.',
-        title: 'Expense Report Period',
-        content: SizedBox(
-          height: 400,
-          child: VSDateRangePicker(
-            initialDateRange: DateTimeRange(
-              start: DateTime(2024, 1, 1),
-              end: DateTime(2024, 1, 31),
-            ),
-            onRangeSelected: (range) {
-              Navigator.of(context).pop();
-              _showActionDialog(context, 'Expense report period updated: ${_formatDate(range.start)} - ${_formatDate(range.end)}');
-            },
-          ),
-        ),
-        actions: [
-          VSDialogAction(
-            label: 'Cancel',
-            onPressed: () {},
-          ),
-        ],
-      ),
+  void _updateProjectTimeline(BuildContext context, DateTimeRange range) {
+    // Simulate project timeline update
+    VSToastService.showToast(
+      context,
+      title: 'Project Updated',
+      description: 'Timeline adjusted to: ${_formatDate(range.start)} - ${_formatDate(range.end)}',
+      type: VSToastType.success,
     );
   }
 
   String _formatDate(DateTime date) {
     return '${date.day}/${date.month}/${date.year}';
-  }
-
-  void _showActionDialog(BuildContext context, String message) {
-    showDialog(
-      context: context,
-      builder: (context) => VSDialog(
-        type: VSDialogType.confirmation,
-        message: message,
-        title: 'Date Range Selected',
-        actions: [
-          VSDialogAction(
-            label: 'OK',
-            onPressed: () {},
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showPickerInfoDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => VSDialog(
-        type: VSDialogType.summary,
-        message: 'VS Date Range Picker Information',
-        title: 'VS Date Range Picker Information',
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'The VS Date Range Picker provides a calendar-based interface for selecting date ranges with VS Design System styling.',
-              style: AppTypography.bodyMediumRegular,
-            ),
-            SizedBox(height: AppSpacing.md),
-            Text(
-              'Key Features:',
-              style: AppTypography.bodyMediumSemibold,
-            ),
-            SizedBox(height: AppSpacing.sm),
-            Text(
-              '• Calendar-based date range selection\n'
-              '• Configurable min/max date constraints\n'
-              '• Custom text styles for all elements\n'
-              '• Callback functions for range and individual date changes\n'
-              '• Custom colors and sizing options\n'
-              '• Standalone implementation (no external dependencies)\n'
-              '• VS Design System integration',
-              style: AppTypography.bodySmallRegular,
-            ),
-          ],
-        ),
-        actions: [
-          VSDialogAction(
-            label: 'Close',
-            onPressed: () {},
-          ),
-        ],
-      ),
-    );
   }
 }

@@ -1,26 +1,29 @@
 # VS Date Range Picker
 
-The VS Date Range Picker component provides a calendar-based interface for selecting date ranges with comprehensive customization options and VS Design System integration.
+The VS Date Range Picker component provides an input field interface for selecting date ranges with comprehensive customization options and VS Design System integration.
 
 ## Overview
 
-The `VSDateRangePicker` widget creates an interactive calendar interface for selecting date ranges. It supports various configurations including date constraints, custom styling, and callback functions for handling user selections.
+The `VSDateRangePicker` widget creates a text input field that opens a date range picker dialog when tapped. It supports various configurations including validation, loading states, date constraints, and callback functions for handling user selections.
 
 ## Features
 
-- **Calendar Interface**: Intuitive month-by-month calendar navigation
-- **Date Range Selection**: Visual selection of start and end dates
+- **Input Field Interface**: Clean text input with picker dialog
+- **Date Range Selection**: Visual selection of start and end dates via dialog
+- **Validation Support**: Built-in validation with error display
+- **Loading States**: Loading indicator and disabled states
 - **Date Constraints**: Configurable minimum and maximum selectable dates
 - **Custom Styling**: Extensive customization of text styles and colors
 - **Callback Support**: Multiple callback functions for range and individual date changes
 - **Accessibility**: Screen reader support and keyboard navigation
-- **Responsive Design**: Adapts to different screen sizes
 - **VS Design Integration**: Consistent with VS Design System tokens
 
 ## Basic Usage
 
 ```dart
 VSDateRangePicker(
+  hint: 'Select date range',
+  controller: TextEditingController(),
   onRangeSelected: (DateTimeRange range) {
     print('Selected range: ${range.start} - ${range.end}');
   },
@@ -37,6 +40,8 @@ class BasicDatePicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return VSDateRangePicker(
+      hint: 'Select date range',
+      controller: TextEditingController(),
       onRangeSelected: (range) {
         // Handle range selection
         print('Selected: ${range.start} to ${range.end}');
@@ -51,6 +56,8 @@ Pre-select a date range when the picker opens.
 
 ```dart
 VSDateRangePicker(
+  hint: 'Select date range',
+  controller: TextEditingController(),
   initialDateRange: DateTimeRange(
     start: DateTime.now().subtract(const Duration(days: 7)),
     end: DateTime.now(),
@@ -66,6 +73,8 @@ Limit selectable dates with minimum and maximum constraints.
 
 ```dart
 VSDateRangePicker(
+  hint: 'Select date range',
+  controller: TextEditingController(),
   minDate: DateTime.now(),
   maxDate: DateTime.now().add(const Duration(days: 30)),
   onRangeSelected: (range) {
@@ -74,30 +83,57 @@ VSDateRangePicker(
 )
 ```
 
-### Custom Styled Picker
-Customize text styles for different calendar elements.
+### With Validation and Loading
+Picker with validation, loading states, and error handling.
 
 ```dart
 VSDateRangePicker(
-  // Header text (month/year)
-  leadingDateTextStyle: AppTypography.h5.copyWith(
-    color: AppColors.primaryDefault,
-  ),
-  // Day of week labels
-  daysOfTheWeekTextStyle: AppTypography.bodySmallSemibold.copyWith(
-    color: AppColors.primaryDefault,
-  ),
-  // Regular date cells
-  enabledCellsTextStyle: AppTypography.bodyMediumRegular,
-  // Current date highlighting
-  currentDateTextStyle: AppTypography.bodyMediumSemibold.copyWith(
-    color: AppColors.secondaryDefault,
-  ),
-  // Selected date cells
-  selectedCellsTextStyle: AppTypography.bodyMediumSemibold.copyWith(
-    color: AppColors.neutral0,
-  ),
+  title: 'Booking Period',
+  hint: 'Select check-in and check-out dates',
+  controller: TextEditingController(),
+  require: true,
+  isLoading: false,
+  loadingDesc: 'Loading available dates...',
+  errorNotes: 'Please select a valid date range',
+  dateValidatorFunction: (range) {
+    if (range == null) return 'Date range is required';
+    if (range.duration.inDays > 30) return 'Maximum stay is 30 days';
+    return null;
+  },
   onRangeSelected: (range) {
+    // Handle valid range selection
+  },
+)
+```
+
+### Custom Styled Picker
+Customize appearance and behavior.
+
+```dart
+VSDateRangePicker(
+  hint: 'Select date range',
+  controller: TextEditingController(),
+  title: 'Date Range',
+  require: true,
+  enable: true,
+  padding: const EdgeInsets.all(16),
+  contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+  height: 48,
+  dateShowFormat: 'MMM dd, yyyy',
+  onRangeSelected: (range) {
+    // Handle range selection
+  },
+  onDateChanged: (range) {
+    // Called when range changes
+  },
+  dateSaveCallBack: (range) {
+    // Called when range is saved
+  },
+  onClear: () {
+    // Called when clear button is pressed
+  },
+)
+```
     // Handle selection
   },
 )
@@ -115,6 +151,7 @@ class AnalyticsDashboard extends StatefulWidget {
 }
 
 class _AnalyticsDashboardState extends State<AnalyticsDashboard> {
+  final TextEditingController _dateController = TextEditingController();
   DateTimeRange? _selectedRange;
 
   @override
@@ -122,19 +159,26 @@ class _AnalyticsDashboardState extends State<AnalyticsDashboard> {
     return Scaffold(
       appBar: VSAppBar(
         title: 'Analytics Dashboard',
-        actions: [
-          VSButton(
-            label: _selectedRange != null
-                ? '${_formatDate(_selectedRange!.start)} - ${_formatDate(_selectedRange!.end)}'
-                : 'Select Range',
-            onPressed: () => _showDatePicker(context),
-            size: VSButtonSize.small,
-            variant: VSButtonVariant.outlined,
-          ),
-        ],
       ),
       body: Column(
         children: [
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: VSDateRangePicker(
+              title: 'Date Range',
+              hint: 'Select date range for analytics',
+              controller: _dateController,
+              initialDateRange: _selectedRange ?? DateTimeRange(
+                start: DateTime.now().subtract(const Duration(days: 7)),
+                end: DateTime.now(),
+              ),
+              onRangeSelected: (range) {
+                setState(() => _selectedRange = range);
+                // Refresh analytics data
+                _loadAnalyticsData(range);
+              },
+            ),
+          ),
           // Analytics content
           Text('Showing data for: ${_selectedRange?.toString() ?? 'All time'}'),
         ],
@@ -142,26 +186,161 @@ class _AnalyticsDashboardState extends State<AnalyticsDashboard> {
     );
   }
 
-  void _showDatePicker(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => VSDialog(
-        type: VSDialogType.input,
-        message: 'Select date range for analytics',
-        content: SizedBox(
-          height: 400,
-          child: VSDateRangePicker(
-            initialDateRange: _selectedRange ?? DateTimeRange(
-              start: DateTime.now().subtract(const Duration(days: 7)),
-              end: DateTime.now(),
-            ),
+  void _loadAnalyticsData(DateTimeRange range) {
+    // Load analytics data for the selected range
+  }
+}
+```
+
+### Booking System
+Date range picker for hotel/restaurant bookings with validation.
+
+```dart
+class BookingForm extends StatefulWidget {
+  @override
+  _BookingFormState createState() => _BookingFormState();
+}
+
+class _BookingFormState extends State<BookingForm> {
+  final TextEditingController _dateController = TextEditingController();
+  DateTimeRange? _selectedRange;
+  bool _isLoading = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return VSDialog(
+      type: VSDialogType.input,
+      title: 'Book Your Stay',
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          VSDateRangePicker(
+            title: 'Check-in / Check-out',
+            hint: 'Select your dates',
+            controller: _dateController,
+            require: true,
+            isLoading: _isLoading,
+            loadingDesc: 'Checking availability...',
+            minDate: DateTime.now(),
+            maxDate: DateTime.now().add(const Duration(days: 365)),
+            dateValidatorFunction: (range) {
+              if (range == null) return 'Please select check-in and check-out dates';
+              if (range.duration.inDays < 1) return 'Minimum stay is 1 night';
+              if (range.duration.inDays > 30) return 'Maximum stay is 30 nights';
+              return null;
+            },
             onRangeSelected: (range) {
               setState(() => _selectedRange = range);
-              Navigator.of(context).pop();
-              // Refresh analytics data
-              _loadAnalyticsData(range);
             },
           ),
+          const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              VSTextButton(
+                label: 'Cancel',
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+              const SizedBox(width: 8),
+              VSButton(
+                label: 'Book Now',
+                onPressed: _selectedRange != null ? _submitBooking : null,
+                isLoading: _isLoading,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _submitBooking() async {
+    setState(() => _isLoading = true);
+    try {
+      // Submit booking
+      await _processBooking(_selectedRange!);
+      Navigator.of(context).pop();
+      VSToast.show(
+        context: context,
+        message: 'Booking confirmed!',
+        type: VSToastType.success,
+      );
+    } catch (e) {
+      VSToast.show(
+        context: context,
+        message: 'Booking failed. Please try again.',
+        type: VSToastType.error,
+      );
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
+}
+```
+
+### Report Generation
+Date range picker for generating reports with custom formatting.
+
+```dart
+class ReportGenerator extends StatefulWidget {
+  @override
+  _ReportGeneratorState createState() => _ReportGeneratorState();
+}
+
+class _ReportGeneratorState extends State<ReportGenerator> {
+  final TextEditingController _dateController = TextEditingController();
+  DateTimeRange? _selectedRange;
+  String _dateFormat = 'MMM dd, yyyy';
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        VSDateRangePicker(
+          title: 'Report Period',
+          hint: 'Select period for report',
+          controller: _dateController,
+          dateShowFormat: _dateFormat,
+          initialDateRange: DateTimeRange(
+            start: DateTime.now().subtract(const Duration(days: 30)),
+            end: DateTime.now(),
+          ),
+          onRangeSelected: (range) {
+            setState(() => _selectedRange = range);
+            _generateReport(range);
+          },
+        ),
+        const SizedBox(height: 16),
+        VSDropdown(
+          label: 'Date Format',
+          value: _dateFormat,
+          items: const [
+            VSDropdownItem(value: 'MMM dd, yyyy', label: 'Dec 25, 2023'),
+            VSDropdownItem(value: 'MM/dd/yyyy', label: '12/25/2023'),
+            VSDropdownItem(value: 'yyyy-MM-dd', label: '2023-12-25'),
+          ],
+          onChanged: (value) {
+            setState(() => _dateFormat = value!);
+            if (_selectedRange != null) {
+              _updateControllerText(_selectedRange!);
+            }
+          },
+        ),
+      ],
+    );
+  }
+
+  void _generateReport(DateTimeRange range) {
+    // Generate report for the selected date range
+  }
+
+  void _updateControllerText(DateTimeRange range) {
+    final formatted = '${range.start.toString().split(' ')[0]} - ${range.end.toString().split(' ')[0]}';
+    _dateController.text = formatted;
+  }
+}
+```
         ),
         actions: [
           VSDialogAction(
@@ -833,6 +1012,63 @@ class _ValidatedDateRangePickerState extends State<ValidatedDateRangePicker> {
   }
 }
 ```
+
+## API Reference
+
+### Constructor Parameters
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `hint` | `String` | Yes | - | The hint text displayed in the input field |
+| `controller` | `TextEditingController` | Yes | - | Controller for the input field text |
+| `title` | `String?` | No | `null` | Title text displayed above the input field |
+| `placeHolder` | `String?` | No | `null` | Placeholder text when no date is selected |
+| `require` | `bool` | No | `false` | Whether this field is required |
+| `enable` | `bool` | No | `true` | Whether the field is enabled for interaction |
+| `isLoading` | `bool` | No | `false` | Whether to show loading state |
+| `loadingDesc` | `String?` | No | `null` | Description text shown during loading |
+| `errorNotes` | `String?` | No | `null` | Error message displayed as tooltip |
+| `startDate` | `DateTime?` | No | `null` | Earliest selectable date |
+| `endDate` | `DateTime?` | No | `null` | Latest selectable date |
+| `initialDateRange` | `DateTimeRange?` | No | `null` | Initially selected date range |
+| `minDate` | `DateTime?` | No | `null` | Minimum selectable date |
+| `maxDate` | `DateTime?` | No | `null` | Maximum selectable date |
+| `dateSaveCallBack` | `Function(DateTimeRange?)?` | No | `null` | Called when date range is saved |
+| `dateValidatorFunction` | `Function(DateTimeRange?)?` | No | `null` | Function to validate selected range |
+| `onDateChanged` | `ValueChanged<DateTimeRange>?` | No | `null` | Called when date range changes |
+| `onClear` | `Function()?` | No | `null` | Called when clear button is pressed |
+| `flex` | `int?` | No | `null` | Flex factor for expanded layout |
+| `padding` | `EdgeInsets` | No | `EdgeInsets.zero` | Padding around the widget |
+| `contentPadding` | `EdgeInsets?` | No | `null` | Padding inside the input field |
+| `height` | `double?` | No | `null` | Height of the input field |
+| `dateShowFormat` | `String` | No | `"yyyy-MM-dd"` | Format for displaying dates |
+| `onRangeSelected` | `ValueChanged<DateTimeRange>?` | No | `null` | Called when range is selected |
+| `onStartDateChanged` | `ValueChanged<DateTime>?` | No | `null` | Called when start date changes |
+| `onEndDateChanged` | `ValueChanged<DateTime>?` | No | `null` | Called when end date changes |
+| `currentDate` | `DateTime?` | No | `null` | Current date for highlighting |
+
+### Callback Functions
+
+- **`onRangeSelected(DateTimeRange range)`**: Called when user selects a date range
+- **`onDateChanged(DateTimeRange range)`**: Called when the selected range changes
+- **`dateSaveCallBack(DateTimeRange? range)`**: Called when range is saved/confirmed
+- **`dateValidatorFunction(DateTimeRange? range)`**: Returns validation error message or null
+- **`onClear()`**: Called when clear button is pressed
+
+### VSDateRangePickerWithActions
+
+Helper widget that wraps the picker with confirm/cancel buttons.
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `initialDateRange` | `DateTimeRange?` | No | `null` | Initially selected date range |
+| `minDate` | `DateTime?` | No | `null` | Minimum selectable date |
+| `maxDate` | `DateTime?` | No | `null` | Maximum selectable date |
+| `onConfirm` | `ValueChanged<DateTimeRange>?` | No | `null` | Called when user confirms selection |
+| `onCancel` | `VoidCallback?` | No | `null` | Called when user cancels |
+| `cancelLabel` | `String` | No | `"Cancel"` | Label for cancel button |
+| `confirmLabel` | `String` | No | `"Confirm"` | Label for confirm button |
+| `showActions` | `bool` | No | `true` | Whether to show action buttons |
 
 ## Accessibility
 

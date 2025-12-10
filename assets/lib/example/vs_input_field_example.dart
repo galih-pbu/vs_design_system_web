@@ -53,6 +53,14 @@ class _VSInputFieldExampleState extends State<VSInputFieldExample> {
         VSInputField(
           label: 'Name',
           hintText: 'Enter your name',
+          onChanged: (value) {
+            VSToastService.showToast(
+              context,
+              title: 'Input Changed',
+              description: 'Name: "$value"',
+              type: VSToastType.info,
+            );
+          },
         ),
         SizedBox(height: AppSpacing.lg),
 
@@ -62,6 +70,14 @@ class _VSInputFieldExampleState extends State<VSInputFieldExample> {
           isRequired: true,
           type: VSInputFieldType.email,
           hintText: 'user@email.com',
+          onChanged: (value) {
+            VSToastService.showToast(
+              context,
+              title: 'Email Input',
+              description: 'Email: "$value"',
+              type: VSToastType.info,
+            );
+          },
         ),
         SizedBox(height: AppSpacing.lg),
 
@@ -70,6 +86,14 @@ class _VSInputFieldExampleState extends State<VSInputFieldExample> {
           label: 'Password',
           type: VSInputFieldType.password,
           hintText: 'Enter password',
+          onChanged: (value) {
+            VSToastService.showToast(
+              context,
+              title: 'Password Input',
+              description: 'Password length: ${value.length}',
+              type: VSToastType.info,
+            );
+          },
         ),
         SizedBox(height: AppSpacing.lg),
 
@@ -83,9 +107,17 @@ class _VSInputFieldExampleState extends State<VSInputFieldExample> {
 
         // Disabled
         VSInputField(
-          label: 'Username',
+          label: 'Username (Disabled)',
           initialValue: 'readonly_user',
           isEnabled: false,
+        ),
+        SizedBox(height: AppSpacing.sm),
+        Text(
+          'Disabled fields show gray background and cannot be edited',
+          style: AppTypography.bodySmallRegular.copyWith(
+            color: AppColors.textSecondary,
+            fontStyle: FontStyle.italic,
+          ),
         ),
         SizedBox(height: AppSpacing.lg),
 
@@ -334,9 +366,9 @@ class _VSInputFieldExampleState extends State<VSInputFieldExample> {
         ),
         SizedBox(height: AppSpacing.lg),
 
-        // Auto-Number (Read-only)
+        // Auto-Number (Read-only with disabled styling)
         Text(
-          'Auto-Number (Read-only)',
+          'Auto-Number (Read-only with Disabled Styling)',
           style: AppTypography.bodyLargeSemibold.copyWith(
             color: AppColors.textSecondary,
           ),
@@ -348,9 +380,39 @@ class _VSInputFieldExampleState extends State<VSInputFieldExample> {
           type: VSInputFieldType.autoNumber,
           initialValue: 'AUTO-00123',
         ),
+        SizedBox(height: AppSpacing.sm),
+        Text(
+          'Read-only fields automatically display with disabled background and text color',
+          style: AppTypography.bodySmallRegular.copyWith(
+            color: AppColors.textSecondary,
+            fontStyle: FontStyle.italic,
+          ),
+        ),
         SizedBox(height: AppSpacing.lg),
 
-        // Enhanced Features Section
+        // Read-only Field
+        Text(
+          'Read-only Field',
+          style: AppTypography.bodyLargeSemibold.copyWith(
+            color: AppColors.textSecondary,
+          ),
+        ),
+        SizedBox(height: AppSpacing.md),
+
+        VSInputField(
+          label: 'System Generated Code',
+          initialValue: 'SYS-2025-001',
+          isReadOnly: true,
+        ),
+        SizedBox(height: AppSpacing.sm),
+        Text(
+          'Fields with isReadOnly: true also display with disabled styling',
+          style: AppTypography.bodySmallRegular.copyWith(
+            color: AppColors.textSecondary,
+            fontStyle: FontStyle.italic,
+          ),
+        ),
+        SizedBox(height: AppSpacing.lg),
         Text(
           'Enhanced Features',
           style: AppTypography.bodyLargeSemibold.copyWith(

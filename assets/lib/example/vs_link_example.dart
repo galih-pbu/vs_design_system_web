@@ -626,47 +626,4 @@ class _VSLinkExampleState extends State<VSLinkExample> {
     );
   }
 
-  void _showLinkInfo(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => VSDialog(
-        type: VSDialogType.summary,
-        title: 'VS Link Information',
-        message: '',
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'The VS Link component provides clickable text elements that follow the VS Design System styling and interaction patterns.',
-              style: AppTypography.bodyMediumRegular,
-            ),
-            SizedBox(height: AppSpacing.md),
-            Text(
-              'Key Features:',
-              style: AppTypography.bodyMediumSemibold,
-            ),
-            SizedBox(height: AppSpacing.sm),
-            Text(
-              '• Consistent underline styling\n'
-              '• Primary color theming\n'
-              '• Hover and tap feedback\n'
-              '• Disabled state support\n'
-              '• Accessible touch targets\n'
-              '• Integration with Flutter\'s gesture system\n'
-              '• Customizable tap callbacks\n'
-              '• VS Design System typography integration',
-              style: AppTypography.bodySmallRegular,
-            ),
-          ],
-        ),
-        actions: [
-          VSDialogAction(
-            label: 'Close',
-            onPressed: () {},
-          ),
-        ],
-      ),
-    );
-  }
 }

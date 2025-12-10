@@ -17,7 +17,6 @@ class _VSDropdownExampleState extends State<VSDropdownExample> {
 
   // Form validation
   String? _countryError;
-  String? _priorityError;
 
   // Autocomplete data
   List<String> _allUsers = [
@@ -185,7 +184,7 @@ class _VSDropdownExampleState extends State<VSDropdownExample> {
         // Autocomplete Dropdown
         _buildDropdownGroup(
           title: 'Autocomplete Dropdown',
-          description: 'Advanced dropdown with search and lazy loading capabilities',
+          description: 'Advanced dropdown with search, lazy loading, debounce (300ms), and enter key support',
           children: [
             Wrap(
               spacing: AppSpacing.md,
@@ -662,7 +661,6 @@ class _VSDropdownExampleState extends State<VSDropdownExample> {
               onChanged: (value) {
                 setState(() {
                   _selectedPriority = value;
-                  _priorityError = null;
                 });
               },
             ),
@@ -832,7 +830,7 @@ class _VSDropdownExampleState extends State<VSDropdownExample> {
           children: [
             VSAutocompleteDropdown(
               label: 'Search Users',
-              hint: 'Type to search users...',
+              hint: 'Type to search (debounce 300ms) or press Enter...',
               value: _selectedUser,
               onLoadMore: (page) async {
                 // Simulate API delay
@@ -1383,47 +1381,4 @@ class _VSDropdownExampleState extends State<VSDropdownExample> {
     );
   }
 
-  void _showDropdownInfo(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => VSDialog(
-        type: VSDialogType.summary,
-        title: 'VS Dropdown Information',
-        message: '',
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'The VS Dropdown component provides flexible selection interfaces with VS Design System styling.',
-              style: AppTypography.bodyMediumRegular,
-            ),
-            SizedBox(height: AppSpacing.md),
-            Text(
-              'Key Features:',
-              style: AppTypography.bodyMediumSemibold,
-            ),
-            SizedBox(height: AppSpacing.sm),
-            Text(
-              '• Basic dropdown: Static list with overlay positioning\n'
-              '• Autocomplete dropdown: Search and lazy loading capabilities\n'
-              '• Form integration: Labels, hints, validation, required fields\n'
-              '• Error handling: Custom error messages and validation states\n'
-              '• Accessibility: Keyboard navigation and screen reader support\n'
-              '• VS Design System: Consistent styling and theming\n'
-              '• State management: Enabled/disabled states and pre-selection\n'
-              '• Performance: Efficient rendering and memory management',
-              style: AppTypography.bodySmallRegular,
-            ),
-          ],
-        ),
-        actions: [
-          VSDialogAction(
-            label: 'Close',
-            onPressed: () {},
-          ),
-        ],
-      ),
-    );
-  }
 }

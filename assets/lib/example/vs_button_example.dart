@@ -24,8 +24,7 @@ class VSButtonExample extends StatelessWidget {
           children: [
             _buildSection(
               title: 'VS Button Variants & Sizes',
-              description:
-                  'Comprehensive demonstration of all button variants, sizes, and interactive examples',
+              description: 'Comprehensive demonstration of all button variants, sizes, and interactive examples',
               child: _buildButtonShowcase(context),
             ),
           ],
@@ -42,7 +41,10 @@ class VSButtonExample extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: AppTypography.h3),
+        Text(
+          title,
+          style: AppTypography.h3,
+        ),
         SizedBox(height: AppSpacing.sm),
         Text(
           description,
@@ -64,8 +66,7 @@ class VSButtonExample extends StatelessWidget {
         // Basic Variants
         _buildButtonGroup(
           title: 'Basic Variants',
-          description:
-              'Primary, secondary, danger, outlined, and text button variants',
+          description: 'Primary, secondary, danger, outlined, and text button variants',
           children: [
             Wrap(
               spacing: AppSpacing.md,
@@ -73,32 +74,27 @@ class VSButtonExample extends StatelessWidget {
               children: [
                 VSButton(
                   label: 'Primary',
-                  onPressed: () =>
-                      _showActionDialog(context, 'Primary button pressed'),
+                  onPressed: () => _showActionDialog(context, 'Primary button pressed'),
                   variant: VSButtonVariant.primary,
                 ),
                 VSButton(
                   label: 'Secondary',
-                  onPressed: () =>
-                      _showActionDialog(context, 'Secondary button pressed'),
+                  onPressed: () => _showActionDialog(context, 'Secondary button pressed'),
                   variant: VSButtonVariant.secondary,
                 ),
                 VSButton(
                   label: 'Danger',
-                  onPressed: () =>
-                      _showActionDialog(context, 'Danger button pressed'),
+                  onPressed: () => _showActionDialog(context, 'Danger button pressed'),
                   variant: VSButtonVariant.danger,
                 ),
                 VSButton(
                   label: 'Outlined',
-                  onPressed: () =>
-                      _showActionDialog(context, 'Outlined button pressed'),
+                  onPressed: () => _showActionDialog(context, 'Outlined button pressed'),
                   variant: VSButtonVariant.outlined,
                 ),
                 VSButton(
                   label: 'Text',
-                  onPressed: () =>
-                      _showActionDialog(context, 'Text button pressed'),
+                  onPressed: () => _showActionDialog(context, 'Text button pressed'),
                   variant: VSButtonVariant.text,
                 ),
               ],
@@ -120,26 +116,22 @@ class VSButtonExample extends StatelessWidget {
               children: [
                 VSButton(
                   label: 'XSmall',
-                  onPressed: () =>
-                      _showActionDialog(context, 'XSmall button pressed'),
+                  onPressed: () => _showActionDialog(context, 'XSmall button pressed'),
                   size: VSButtonSize.xsmall,
                 ),
                 VSButton(
                   label: 'Small',
-                  onPressed: () =>
-                      _showActionDialog(context, 'Small button pressed'),
+                  onPressed: () => _showActionDialog(context, 'Small button pressed'),
                   size: VSButtonSize.small,
                 ),
                 VSButton(
                   label: 'Medium',
-                  onPressed: () =>
-                      _showActionDialog(context, 'Medium button pressed'),
+                  onPressed: () => _showActionDialog(context, 'Medium button pressed'),
                   size: VSButtonSize.medium,
                 ),
                 VSButton(
                   label: 'Large',
-                  onPressed: () =>
-                      _showActionDialog(context, 'Large button pressed'),
+                  onPressed: () => _showActionDialog(context, 'Large button pressed'),
                   size: VSButtonSize.large,
                 ),
               ],
@@ -152,8 +144,7 @@ class VSButtonExample extends StatelessWidget {
         // Buttons with Icons
         _buildButtonGroup(
           title: 'Buttons with Icons',
-          description:
-              'Buttons with left and right icons for enhanced visual communication',
+          description: 'Buttons with left and right icons for enhanced visual communication',
           children: [
             Wrap(
               spacing: AppSpacing.md,
@@ -161,27 +152,23 @@ class VSButtonExample extends StatelessWidget {
               children: [
                 VSButton(
                   label: 'Left Icon',
-                  onPressed: () =>
-                      _showActionDialog(context, 'Left icon button pressed'),
+                  onPressed: () => _showActionDialog(context, 'Left icon button pressed'),
                   leftIcon: Icons.add,
                 ),
                 VSButton(
                   label: 'Right Icon',
-                  onPressed: () =>
-                      _showActionDialog(context, 'Right icon button pressed'),
+                  onPressed: () => _showActionDialog(context, 'Right icon button pressed'),
                   rightIcon: Icons.arrow_forward,
                 ),
                 VSButton(
                   label: 'Both Icons',
-                  onPressed: () =>
-                      _showActionDialog(context, 'Both icons button pressed'),
+                  onPressed: () => _showActionDialog(context, 'Both icons button pressed'),
                   leftIcon: Icons.star,
                   rightIcon: Icons.arrow_forward,
                 ),
                 VSButton(
                   label: 'Icon Only',
-                  onPressed: () =>
-                      _showActionDialog(context, 'Icon only button pressed'),
+                  onPressed: () => _showActionDialog(context, 'Icon only button pressed'),
                   leftIcon: Icons.favorite,
                 ),
               ],
@@ -201,20 +188,16 @@ class VSButtonExample extends StatelessWidget {
               runSpacing: AppSpacing.sm,
               children: [
                 VSButton.save(
-                  onPressed: () =>
-                      _showActionDialog(context, 'Save button pressed'),
+                  onPressed: () => _showActionDialog(context, 'Save button pressed'),
                 ),
                 VSButton.delete(
-                  onPressed: () =>
-                      _showActionDialog(context, 'Delete button pressed'),
+                  onPressed: () => _showActionDialog(context, 'Delete button pressed'),
                 ),
                 VSButton.edit(
-                  onPressed: () =>
-                      _showActionDialog(context, 'Edit button pressed'),
+                  onPressed: () => _showActionDialog(context, 'Edit button pressed'),
                 ),
                 VSButton.cancel(
-                  onPressed: () =>
-                      _showActionDialog(context, 'Cancel button pressed'),
+                  onPressed: () => _showActionDialog(context, 'Cancel button pressed'),
                 ),
               ],
             ),
@@ -224,20 +207,16 @@ class VSButtonExample extends StatelessWidget {
               runSpacing: AppSpacing.sm,
               children: [
                 VSButton.posting(
-                  onPressed: () =>
-                      _showActionDialog(context, 'Posting button pressed'),
+                  onPressed: () => _showActionDialog(context, 'Posting button pressed'),
                 ),
                 VSButton.resync(
-                  onPressed: () =>
-                      _showActionDialog(context, 'Resync button pressed'),
+                  onPressed: () => _showActionDialog(context, 'Resync button pressed'),
                 ),
                 VSButton.export(
-                  onPressed: () =>
-                      _showActionDialog(context, 'Export button pressed'),
+                  onPressed: () => _showActionDialog(context, 'Export button pressed'),
                 ),
                 VSButton.void_(
-                  onPressed: () =>
-                      _showActionDialog(context, 'Void button pressed'),
+                  onPressed: () => _showActionDialog(context, 'Void button pressed'),
                 ),
               ],
             ),
@@ -304,18 +283,15 @@ class VSButtonExample extends StatelessWidget {
                     runSpacing: AppSpacing.sm,
                     children: [
                       VSButton.edit(
-                        onPressed: () =>
-                            _showActionDialog(context, 'Edit pressed'),
+                        onPressed: () => _showActionDialog(context, 'Edit pressed'),
                         size: VSButtonSize.small,
                       ),
                       VSButton.delete(
-                        onPressed: () =>
-                            _showActionDialog(context, 'Delete pressed'),
+                        onPressed: () => _showActionDialog(context, 'Delete pressed'),
                         size: VSButtonSize.small,
                       ),
                       VSButton.save(
-                        onPressed: () =>
-                            _showActionDialog(context, 'Save pressed'),
+                        onPressed: () => _showActionDialog(context, 'Save pressed'),
                         size: VSButtonSize.small,
                       ),
                     ],
@@ -335,13 +311,14 @@ class VSButtonExample extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Form Actions', style: AppTypography.bodyMediumSemibold),
+                  Text(
+                    'Form Actions',
+                    style: AppTypography.bodyMediumSemibold,
+                  ),
                   SizedBox(height: AppSpacing.sm),
                   VSCancelSubmitButtons(
-                    onSubmit: () =>
-                        _showActionDialog(context, 'Form submitted'),
-                    onCancel: () =>
-                        _showActionDialog(context, 'Form cancelled'),
+                    onSubmit: () => _showActionDialog(context, 'Form submitted'),
+                    onCancel: () => _showActionDialog(context, 'Form cancelled'),
                   ),
                 ],
               ),
@@ -376,14 +353,8 @@ class VSButtonExample extends StatelessWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            'User Profile',
-                            style: AppTypography.bodyMediumSemibold,
-                          ),
-                          Text(
-                            'Manage user settings',
-                            style: AppTypography.bodySmallRegular,
-                          ),
+                          Text('User Profile', style: AppTypography.bodyMediumSemibold),
+                          Text('Manage user settings', style: AppTypography.bodySmallRegular),
                         ],
                       ),
                       const Spacer(),
@@ -401,14 +372,12 @@ class VSButtonExample extends StatelessWidget {
                     children: [
                       VSButton(
                         label: 'View Profile',
-                        onPressed: () =>
-                            _showActionDialog(context, 'View profile'),
+                        onPressed: () => _showActionDialog(context, 'View profile'),
                         size: VSButtonSize.small,
                         variant: VSButtonVariant.outlined,
                       ),
                       VSButton.edit(
-                        onPressed: () =>
-                            _showActionDialog(context, 'Edit profile'),
+                        onPressed: () => _showActionDialog(context, 'Edit profile'),
                         size: VSButtonSize.small,
                       ),
                     ],
@@ -440,10 +409,8 @@ class VSButtonExample extends StatelessWidget {
                   ),
                   SizedBox(height: AppSpacing.md),
                   VSCancelSubmitButtons(
-                    onSubmit: () =>
-                        _showActionDialog(context, 'Action confirmed'),
-                    onCancel: () =>
-                        _showActionDialog(context, 'Action cancelled'),
+                    onSubmit: () => _showActionDialog(context, 'Action confirmed'),
+                    onCancel: () => _showActionDialog(context, 'Action cancelled'),
                     submitLabel: 'Confirm',
                     cancelLabel: 'Cancel',
                   ),
@@ -473,27 +440,23 @@ class VSButtonExample extends StatelessWidget {
                     runSpacing: AppSpacing.sm,
                     children: [
                       VSButton.action(
-                        onPressed: () =>
-                            _showActionDialog(context, 'Add new item'),
+                        onPressed: () => _showActionDialog(context, 'Add new item'),
                         label: 'Add',
                         icon: Icons.add,
                         size: VSButtonSize.small,
                       ),
                       VSButton.action(
-                        onPressed: () =>
-                            _showActionDialog(context, 'Import data'),
+                        onPressed: () => _showActionDialog(context, 'Import data'),
                         label: 'Import',
                         icon: Icons.upload,
                         size: VSButtonSize.small,
                       ),
                       VSButton.export(
-                        onPressed: () =>
-                            _showActionDialog(context, 'Export data'),
+                        onPressed: () => _showActionDialog(context, 'Export data'),
                         size: VSButtonSize.small,
                       ),
                       VSButton.action(
-                        onPressed: () =>
-                            _showActionDialog(context, 'Refresh data'),
+                        onPressed: () => _showActionDialog(context, 'Refresh data'),
                         label: 'Refresh',
                         icon: Icons.refresh,
                         size: VSButtonSize.small,
@@ -517,7 +480,10 @@ class VSButtonExample extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: AppTypography.bodyLargeSemibold),
+        Text(
+          title,
+          style: AppTypography.bodyLargeSemibold,
+        ),
         SizedBox(height: AppSpacing.xs),
         Text(
           description,
@@ -537,8 +503,14 @@ class VSButtonExample extends StatelessWidget {
       builder: (context) => VSDialog(
         type: VSDialogType.confirmation,
         message: message,
-        actions: [VSDialogAction(label: 'OK', onPressed: () {})],
+        actions: [
+          VSDialogAction(
+            label: 'OK',
+            onPressed: () {},
+          ),
+        ],
       ),
     );
   }
+
 }
