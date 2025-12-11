@@ -275,7 +275,7 @@ class _VSPaginationExampleState extends State<VSPaginationExample> {
                           ),
                         ),
                         Expanded(
-                          flex: 2,
+                          flex: 1,
                           child: Text(
                             'Category',
                             style: AppTypography.bodySmallSemibold,
@@ -289,7 +289,7 @@ class _VSPaginationExampleState extends State<VSPaginationExample> {
                           ),
                         ),
                         Expanded(
-                          flex: 2,
+                          flex: 1,
                           child: Text(
                             'Status',
                             style: AppTypography.bodySmallSemibold,
@@ -339,7 +339,7 @@ class _VSPaginationExampleState extends State<VSPaginationExample> {
                           ),
                         ),
                         Expanded(
-                          flex: 2,
+                          flex: 1,
                           child: VSChip(
                             label: item['status'],
                             type: VSChipType.color,

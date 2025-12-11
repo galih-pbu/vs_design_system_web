@@ -121,7 +121,7 @@ class _VSToastExampleState extends State<VSToastExample> {
                           type: VSToastType.warning,
                         ),
                         size: VSButtonSize.small,
-                        variant: VSButtonVariant.primary,
+                        variant: VSButtonVariant.outlined,
                       ),
                       VSButton(
                         label: 'Info Toast',

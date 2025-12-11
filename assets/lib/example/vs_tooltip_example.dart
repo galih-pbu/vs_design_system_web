@@ -608,10 +608,14 @@ class _VSTooltipExampleState extends State<VSTooltipExample> {
                             children: [
                               Expanded(child: Text('Item ${index + 1}')),
                               Expanded(
-                                child: VSChip(
-                                  label: ['Active', 'Pending', 'Inactive'][index],
-                                  type: VSChipType.color,
-                                  variant: index == 0 ? VSChipVariant.success : index == 1 ? VSChipVariant.warning : VSChipVariant.neutral,
+                                child: Row(
+                                  children: [
+                                    VSChip(
+                                      label: ['Active', 'Pending', 'Inactive'][index],
+                                      type: VSChipType.color,
+                                      variant: index == 0 ? VSChipVariant.success : index == 1 ? VSChipVariant.warning : VSChipVariant.neutral,
+                                    ),
+                                  ],
                                 ),
                               ),
                               SizedBox(

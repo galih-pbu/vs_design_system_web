@@ -11,6 +11,8 @@ class TableDynamicsExample extends StatefulWidget {
 class _TableDynamicsExampleState extends State<TableDynamicsExample> {
   dynamic tableData;
   int currentPage = 1;
+  String _debounceSearchQuery = '';
+  String _enterSearchQuery = '';
 
   Widget _buildSection({
     required String title,
@@ -839,6 +841,70 @@ class _TableDynamicsExampleState extends State<TableDynamicsExample> {
                 showPagination: false,
               ),
             ),
+            const SizedBox(height: 16),
+
+            // 10. Table with Search (Debounce)
+            Text(
+              '10. Table with Search (Debounce 500ms)',
+              style: AppTypography.bodySmallMedium.copyWith(
+                color: AppColors.textSecondary,
+              ),
+            ),
+            const SizedBox(height: 8),
+            SizedBox(
+              width: double.infinity,
+              height: 350,
+              child: VsTableDynamic(
+                tableData: _createFilteredSimpleTableData(_debounceSearchQuery),
+                currentPage: 1,
+                pageSize: 10,
+                showPagination: false,
+                onSearchChanged: (query) {
+                  setState(() {
+                    _debounceSearchQuery = query;
+                  });
+                  VSToastService.showToast(
+                    context,
+                    title: 'Search Query',
+                    description: 'Searching for: "$query"',
+                    type: VSToastType.info,
+                  );
+                },
+                searchDebounceDuration: const Duration(milliseconds: 500),
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // 11. Table with Search (On Enter)
+            Text(
+              '11. Table with Search (On Enter Key)',
+              style: AppTypography.bodySmallMedium.copyWith(
+                color: AppColors.textSecondary,
+              ),
+            ),
+            const SizedBox(height: 8),
+            SizedBox(
+              width: double.infinity,
+              height: 350,
+              child: VsTableDynamic(
+                tableData: _createFilteredSimpleTableData(_enterSearchQuery),
+                currentPage: 1,
+                pageSize: 10,
+                showPagination: false,
+                onSearchChanged: (query) {
+                  setState(() {
+                    _enterSearchQuery = query;
+                  });
+                  VSToastService.showToast(
+                    context,
+                    title: 'Search Triggered',
+                    description: 'Searching for: "$query"',
+                    type: VSToastType.success,
+                  );
+                },
+                searchTriggerOnEnter: true,
+              ),
+            ),
           ],
         ),
       ],
@@ -971,6 +1037,28 @@ TableData _createSimpleTableData() {
         ],
       ),
     ],
+  );
+}
+
+TableData _createFilteredSimpleTableData(String query) {
+  final baseData = _createSimpleTableData();
+  
+  if (query.isEmpty || baseData.detail == null) {
+    return baseData;
+  }
+  
+  final filteredDetail = baseData.detail!.where((row) {
+    // Search in name and role columns (index 0 and 1)
+    final name = row.rowData[0].data.toString().toLowerCase();
+    final role = row.rowData[1].data.toString().toLowerCase();
+    final searchLower = query.toLowerCase();
+    
+    return name.contains(searchLower) || role.contains(searchLower);
+  }).toList();
+  
+  return TableData(
+    header: baseData.header,
+    detail: filteredDetail,
   );
 }
 
