@@ -1,5 +1,7 @@
 # VS Checkbox
 
+**Version 1.0.1 - December 14, 2025**
+
 The VS Checkbox component provides interactive checkboxes for boolean selection with multiple sizes, states, and customization options.
 
 ## Overview

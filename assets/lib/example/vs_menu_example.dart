@@ -167,6 +167,13 @@ class _VSMenuExampleState extends State<VSMenuExample> {
                     isSelected: _selectedNavigationIndex == 4,
                     onTap: () => _handleNavigationTap(4),
                   ),
+                  if (_showHelp)
+                    VSMenuItem(
+                      icon: Icons.help,
+                      tooltip: 'Help',
+                      isSelected: _selectedNavigationIndex == 6,
+                      onTap: () => _handleNavigationTap(6),
+                    ),
                 ],
                 settingsItem: _showSettings
                     ? VSMenuItem(

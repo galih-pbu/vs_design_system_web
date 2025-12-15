@@ -2,76 +2,108 @@
 
 ## Overview
 
-The VS Filter component provides flexible filtering interfaces with collapsible panels and date range selection. It supports individual filter items with icons and labels, along with integrated date picker functionality for comprehensive data filtering.
+The VS Filter component provides advanced filtering interfaces with popup menus, collapsible panels, and integrated date range selection. It supports multiple filter types including dropdown selections, date pickers, and custom content for comprehensive data filtering.
 
 ## Features
 
-- **Collapsible Filter Panel**: Expandable filter interface with selectable items
-- **Individual Filter Items**: Configurable filter options with icons and labels
-- **Date Range Picker**: Calendar-based date selection with custom titles
-- **Reset Functionality**: Clear all active filters with one action
+- **Popup Filter Menu**: Expandable filter interface with selectable items
+- **Multiple Filter Types**: Dropdown menus, date filters, date range filters, custom filters
 - **State Management**: Track active filters and user selections
+- **Reset Functionality**: Clear all active filters with one action
 - **VS Design System**: Consistent styling and theming
 - **Interactive Feedback**: Visual selection indicators and state changes
-- **Flexible Layout**: Side-by-side combinations of filters and date pickers
+- **Flexible Layout**: Side-by-side combinations of filters
 - **Accessibility**: Keyboard navigation and screen reader support
+
+## Classes
+
+### Data Classes
+
+- `VSFilterItem`: Represents individual filter items with id, name, and selection state
+- `VSFilterMenuItem`: Menu item for dropdown filters with search capability
+- `VSCustomFilterMenuItem`: Menu item for custom filter content
+- `VSFilterMenuItem2`: Enhanced menu item with ValueNotifier support
+- `VSDateFilterMenuItem`: Menu item for single date selection
+- `VSDateRangeFilterMenuItem`: Menu item for date range selection
+
+### Widget Classes
+
+- `VSFilterButton`: Basic filter button with popup menu
+- `VSParentFilterGroup`: Advanced filter group with apply/reset functionality
 
 ## Basic Usage
 
-### Simple Filter Panel
+### Simple Filter Button
 
 ```dart
-VSFilter(
-  items: [
-    VSFilterItem(
-      id: 'status',
-      label: 'Status',
-      icon: Icons.flag,
-      onChanged: (selected) {
-        print('Status filter: $selected');
-      },
+VSFilterButton(
+  lsFilterMenuItem: [
+    VSFilterMenuItem(
+      icon: Icon(Icons.flag),
+      title: 'Status',
+      lsItem: [
+        DropDownObj(id: '1', descs: 'Active'),
+        DropDownObj(id: '2', descs: 'Inactive'),
+        DropDownObj(id: '3', descs: 'Pending'),
+      ],
+      isMultiSelect: false,
     ),
-    VSFilterItem(
-      id: 'priority',
-      label: 'Priority',
-      icon: Icons.priority_high,
-      onChanged: (selected) {
-        print('Priority filter: $selected');
-      },
+    VSFilterMenuItem(
+      icon: Icon(Icons.category),
+      title: 'Category',
+      lsItem: [
+        DropDownObj(id: '1', descs: 'Technology'),
+        DropDownObj(id: '2', descs: 'Business'),
+        DropDownObj(id: '3', descs: 'Design'),
+      ],
+      isMultiSelect: true,
+      withSearch: true,
+      searchBarTitle: 'Search category...',
     ),
   ],
-  onReset: () {
-    print('All filters reset');
+  resetCallback: () {
+    print('Filters reset');
   },
 )
 ```
 
-### Filter with Date Picker
+### Advanced Filter Group
 
 ```dart
-Row(
+VSParentFilterGroup(
+  applyCallback: () {
+    print('Filters applied');
+  },
   children: [
-    VSFilter(
-      items: [
-        VSFilterItem(
-          id: 'category',
-          label: 'Category',
-          icon: Icons.category,
-        ),
-        VSFilterItem(
-          id: 'status',
-          label: 'Status',
-          icon: Icons.flag,
-        ),
-      ],
+    VSFilterMenuItem2(
+      icon: Icon(Icons.flag),
+      title: 'Status',
+      lsItemNotifier: ValueNotifier([
+        VSFilterItem(name: 'Active', id: 'active'),
+        VSFilterItem(name: 'Inactive', id: 'inactive'),
+        VSFilterItem(name: 'Pending', id: 'pending'),
+      ]),
+      isMultiSelect: false,
     ),
-    SizedBox(width: AppSpacing.md),
-    VSFilterDatePicker(
-      title: 'Date Range',
-      placeholder: 'Select date range',
-      onDateRangeChanged: (range) {
-        print('Selected range: ${range?.start} to ${range?.end}');
-      },
+    VSFilterMenuItem2(
+      icon: Icon(Icons.category),
+      title: 'Category',
+      lsItemNotifier: ValueNotifier([
+        VSFilterItem(name: 'Technology', id: 'tech'),
+        VSFilterItem(name: 'Business', id: 'business'),
+        VSFilterItem(name: 'Design', id: 'design'),
+      ]),
+      isMultiSelect: true,
+    ),
+    VSDateRangeFilterMenuItem(
+      icon: VSIcon(name: VSIcons.calendar, size: 16),
+      title: 'Created Date',
+      initialDateRange: DateTimeRange(
+        start: DateTime.now().subtract(Duration(days: 30)),
+        end: DateTime.now(),
+      ),
+      startDate: DateTime(2020),
+      endDate: DateTime(2030),
     ),
   ],
 )
@@ -86,36 +118,39 @@ class FilterExample extends StatefulWidget {
 }
 
 class _FilterExampleState extends State<FilterExample> {
-  bool _isStatusActive = false;
-  bool _isPriorityActive = false;
+  final ValueNotifier<List<VSFilterItem>> statusItems = ValueNotifier([
+    VSFilterItem(name: 'Active', id: 'active'),
+    VSFilterItem(name: 'Inactive', id: 'inactive'),
+    VSFilterItem(name: 'Pending', id: 'pending'),
+  ]);
+
+  final ValueNotifier<List<VSFilterItem>> categoryItems = ValueNotifier([
+    VSFilterItem(name: 'Technology', id: 'tech'),
+    VSFilterItem(name: 'Business', id: 'business'),
+    VSFilterItem(name: 'Design', id: 'design'),
+  ]);
 
   @override
   Widget build(BuildContext context) {
-    return VSFilter(
-      items: [
-        VSFilterItem(
-          id: 'status',
-          label: 'Status',
-          icon: Icons.flag,
-          onChanged: (selected) {
-            setState(() => _isStatusActive = selected);
-          },
+    return VSParentFilterGroup(
+      applyCallback: () {
+        // Apply filters
+        print('Filters applied');
+      },
+      children: [
+        VSFilterMenuItem2(
+          icon: Icon(Icons.flag),
+          title: 'Status',
+          lsItemNotifier: statusItems,
+          isMultiSelect: false,
         ),
-        VSFilterItem(
-          id: 'priority',
-          label: 'Priority',
-          icon: Icons.priority_high,
-          onChanged: (selected) {
-            setState(() => _isPriorityActive = selected);
-          },
+        VSFilterMenuItem2(
+          icon: Icon(Icons.category),
+          title: 'Category',
+          lsItemNotifier: categoryItems,
+          isMultiSelect: true,
         ),
       ],
-      onReset: () {
-        setState(() {
-          _isStatusActive = false;
-          _isPriorityActive = false;
-        });
-      },
     );
   }
 }
@@ -128,91 +163,99 @@ class _FilterExampleState extends State<FilterExample> {
 #### Filter with Icons
 
 ```dart
-VSFilter(
-  items: [
-    VSFilterItem(
-      id: 'assignee',
-      label: 'Assignee',
-      icon: Icons.person,
+VSFilterButton(
+  lsFilterMenuItem: [
+    VSFilterMenuItem(
+      icon: Icon(Icons.person),
+      title: 'Assignee',
+      lsItem: [
+        DropDownObj(id: '1', descs: 'John Doe'),
+        DropDownObj(id: '2', descs: 'Jane Smith'),
+      ],
+      isMultiSelect: false,
     ),
-    VSFilterItem(
-      id: 'date',
-      label: 'Date Range',
-      icon: Icons.calendar_today,
-    ),
-    VSFilterItem(
-      id: 'category',
-      label: 'Category',
-      icon: Icons.category,
+    VSFilterMenuItem(
+      icon: Icon(Icons.calendar_today),
+      title: 'Date Range',
+      lsItem: [
+        DropDownObj(id: '1', descs: 'Last 7 days'),
+        DropDownObj(id: '2', descs: 'Last 30 days'),
+      ],
+      isMultiSelect: false,
     ),
   ],
 )
 ```
 
-#### Filter with Callback Actions
+#### Filter with Search
 
 ```dart
-VSFilter(
-  items: [
-    VSFilterItem(
-      id: 'urgent',
-      label: 'Urgent Only',
-      icon: Icons.warning,
-      onChanged: (selected) {
-        if (selected) {
-          // Apply urgent filter
-          _applyUrgentFilter();
-        } else {
-          // Remove urgent filter
-          _removeUrgentFilter();
-        }
-      },
+VSFilterButton(
+  lsFilterMenuItem: [
+    VSFilterMenuItem(
+      icon: Icon(Icons.category),
+      title: 'Category',
+      lsItem: [
+        DropDownObj(id: '1', descs: 'Technology'),
+        DropDownObj(id: '2', descs: 'Business'),
+        DropDownObj(id: '3', descs: 'Design'),
+        DropDownObj(id: '4', descs: 'Marketing'),
+      ],
+      isMultiSelect: true,
+      withSearch: true,
+      searchBarTitle: 'Search categories...',
     ),
   ],
-  onReset: () {
-    _clearAllFilters();
-  },
 )
 ```
 
 ### Date Picker Variants
 
-#### Basic Date Picker
+#### Date Range Filter
 
 ```dart
-VSFilterDatePicker(
+VSDateRangeFilterMenuItem(
+  icon: VSIcon(name: VSIcons.calendar, size: 16),
   title: 'Select Period',
-  placeholder: 'Choose start and end dates',
-  onDateRangeChanged: (range) {
-    print('Date range selected: $range');
-  },
-)
-```
-
-#### Pre-selected Date Range
-
-```dart
-VSFilterDatePicker(
-  title: 'Report Period',
-  placeholder: 'Pre-selected date range',
   initialDateRange: DateTimeRange(
-    start: DateTime.now().subtract(const Duration(days: 30)),
+    start: DateTime.now().subtract(Duration(days: 30)),
     end: DateTime.now(),
   ),
-  onDateRangeChanged: (range) {
-    // Handle date range change
-  },
+  startDate: DateTime(2020),
+  endDate: DateTime(2030),
 )
 ```
 
-#### Custom Title and Placeholder
+*Note: Date pickers are centered within the popup menu for optimal user experience.*
+
+#### Single Date Filter
 
 ```dart
-VSFilterDatePicker(
-  title: 'Project Timeline',
-  placeholder: 'Select project start and end dates',
-  onDateRangeChanged: (range) {
-    // Process project timeline
+VSDateFilterMenuItem(
+  icon: VSIcon(name: VSIcons.calendar, size: 16),
+  title: 'Due Date',
+  initialDate: DateTime.now(),
+  firstDate: DateTime(2020),
+  lastDate: DateTime(2030),
+)
+```
+
+#### Custom Filter Content
+
+```dart
+VSCustomFilterMenuItem(
+  icon: Icon(Icons.settings),
+  title: 'Advanced Settings',
+  contentBuilder: (closePopup, filtered, lsNotifier) {
+    return Column(
+      children: [
+        Text('Custom filter content here'),
+        ElevatedButton(
+          onPressed: closePopup,
+          child: Text('Apply'),
+        ),
+      ],
+    );
   },
 )
 ```
@@ -228,55 +271,45 @@ class TaskFilters extends StatefulWidget {
 }
 
 class _TaskFiltersState extends State<TaskFilters> {
-  bool _statusFilter = false;
-  bool _priorityFilter = false;
-  bool _assigneeFilter = false;
-  bool _categoryFilter = false;
-  DateTimeRange? _dueDateRange;
+  final ValueNotifier<List<VSFilterItem>> statusItems = ValueNotifier([
+    VSFilterItem(name: 'Active', id: 'active'),
+    VSFilterItem(name: 'Inactive', id: 'inactive'),
+    VSFilterItem(name: 'Pending', id: 'pending'),
+  ]);
+
+  final ValueNotifier<List<VSFilterItem>> priorityItems = ValueNotifier([
+    VSFilterItem(name: 'High', id: 'high'),
+    VSFilterItem(name: 'Medium', id: 'medium'),
+    VSFilterItem(name: 'Low', id: 'low'),
+  ]);
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return VSParentFilterGroup(
+      applyCallback: () {
+        // Apply task filters
+        print('Task filters applied');
+      },
       children: [
-        VSFilter(
-          items: [
-            VSFilterItem(
-              id: 'status',
-              label: 'Status',
-              icon: Icons.flag,
-              onChanged: (selected) => setState(() => _statusFilter = selected),
-            ),
-            VSFilterItem(
-              id: 'priority',
-              label: 'Priority',
-              icon: Icons.priority_high,
-              onChanged: (selected) => setState(() => _priorityFilter = selected),
-            ),
-            VSFilterItem(
-              id: 'assignee',
-              label: 'Assignee',
-              icon: Icons.person,
-              onChanged: (selected) => setState(() => _assigneeFilter = selected),
-            ),
-            VSFilterItem(
-              id: 'category',
-              label: 'Category',
-              icon: Icons.category,
-              onChanged: (selected) => setState(() => _categoryFilter = selected),
-            ),
-          ],
-          onReset: () => setState(() {
-            _statusFilter = false;
-            _priorityFilter = false;
-            _assigneeFilter = false;
-            _categoryFilter = false;
-          }),
+        VSFilterMenuItem2(
+          icon: Icon(Icons.flag),
+          title: 'Status',
+          lsItemNotifier: statusItems,
+          isMultiSelect: false,
         ),
-        SizedBox(width: AppSpacing.md),
-        VSFilterDatePicker(
+        VSFilterMenuItem2(
+          icon: Icon(Icons.priority_high),
+          title: 'Priority',
+          lsItemNotifier: priorityItems,
+          isMultiSelect: true,
+        ),
+        VSDateRangeFilterMenuItem(
+          icon: VSIcon(name: VSIcons.calendar, size: 16),
           title: 'Due Date Range',
-          placeholder: 'Filter by due dates',
-          onDateRangeChanged: (range) => setState(() => _dueDateRange = range),
+          initialDateRange: DateTimeRange(
+            start: DateTime.now(),
+            end: DateTime.now().add(Duration(days: 30)),
+          ),
         ),
       ],
     );
@@ -290,41 +323,34 @@ class _TaskFiltersState extends State<TaskFilters> {
 class ProductFilters extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return VSParentFilterGroup(
+      applyCallback: () {
+        // Apply product filters
+      },
       children: [
-        VSFilter(
-          items: [
-            VSFilterItem(
-              id: 'category',
-              label: 'Category',
-              icon: Icons.category,
-            ),
-            VSFilterItem(
-              id: 'price',
-              label: 'Price Range',
-              icon: Icons.attach_money,
-            ),
-            VSFilterItem(
-              id: 'brand',
-              label: 'Brand',
-              icon: Icons.business,
-            ),
-            VSFilterItem(
-              id: 'rating',
-              label: 'Rating',
-              icon: Icons.star,
-            ),
-            VSFilterItem(
-              id: 'availability',
-              label: 'Availability',
-              icon: Icons.inventory,
-            ),
-          ],
+        VSFilterMenuItem2(
+          icon: Icon(Icons.category),
+          title: 'Category',
+          lsItemNotifier: ValueNotifier([
+            VSFilterItem(name: 'Electronics', id: 'electronics'),
+            VSFilterItem(name: 'Clothing', id: 'clothing'),
+            VSFilterItem(name: 'Books', id: 'books'),
+          ]),
+          isMultiSelect: true,
         ),
-        SizedBox(width: AppSpacing.md),
-        VSFilterDatePicker(
+        VSFilterMenuItem2(
+          icon: Icon(Icons.attach_money),
+          title: 'Price Range',
+          lsItemNotifier: ValueNotifier([
+            VSFilterItem(name: 'Under $50', id: 'under50'),
+            VSFilterItem(name: '$50-$100', id: '50to100'),
+            VSFilterItem(name: 'Over $100', id: 'over100'),
+          ]),
+          isMultiSelect: false,
+        ),
+        VSDateRangeFilterMenuItem(
+          icon: VSIcon(name: VSIcons.calendar, size: 16),
           title: 'Added Date',
-          placeholder: 'Filter by date added',
         ),
       ],
     );
@@ -345,43 +371,42 @@ class _AnalyticsFiltersState extends State<AnalyticsFilters> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return VSParentFilterGroup(
+      applyCallback: () {
+        // Apply analytics filters
+      },
       children: [
-        VSFilter(
-          items: [
-            VSFilterItem(
-              id: 'metrics',
-              label: 'Metrics',
-              icon: Icons.analytics,
-            ),
-            VSFilterItem(
-              id: 'users',
-              label: 'User Segments',
-              icon: Icons.people,
-            ),
-            VSFilterItem(
-              id: 'traffic',
-              label: 'Traffic Sources',
-              icon: Icons.traffic,
-            ),
-            VSFilterItem(
-              id: 'devices',
-              label: 'Device Types',
-              icon: Icons.devices,
-            ),
-          ],
+        VSFilterMenuItem2(
+          icon: Icon(Icons.analytics),
+          title: 'Metrics',
+          lsItemNotifier: ValueNotifier([
+            VSFilterItem(name: 'Page Views', id: 'pageviews'),
+            VSFilterItem(name: 'Unique Visitors', id: 'visitors'),
+            VSFilterItem(name: 'Bounce Rate', id: 'bounce'),
+          ]),
+          isMultiSelect: true,
         ),
-        SizedBox(width: AppSpacing.md),
-        VSFilterDatePicker(
+        VSFilterMenuItem2(
+          icon: Icon(Icons.people),
+          title: 'User Segments',
+          lsItemNotifier: ValueNotifier([
+            VSFilterItem(name: 'New Users', id: 'new'),
+            VSFilterItem(name: 'Returning Users', id: 'returning'),
+          ]),
+          isMultiSelect: false,
+        ),
+        VSDateRangeFilterMenuItem(
+          icon: VSIcon(name: VSIcons.calendar, size: 16),
           title: 'Report Period',
-          placeholder: 'Select analytics period',
           initialDateRange: DateTimeRange(
-            start: DateTime.now().subtract(const Duration(days: 30)),
+            start: DateTime.now().subtract(Duration(days: 30)),
             end: DateTime.now(),
           ),
-          onDateRangeChanged: (range) => setState(() => _reportPeriod = range),
         ),
       ],
+    );
+  }
+}
     );
   }
 }
@@ -436,219 +461,73 @@ void _showTaskManagementFilters(BuildContext context) {
 }
 ```
 
-### Project Management Filters
-
-```dart
-void _showProjectFilters(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (context) => Dialog(
-      backgroundColor: Colors.transparent,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          VSFilter(
-            items: [
-              VSFilterItem(
-                id: 'status',
-                label: 'Project Status',
-                icon: Icons.folder,
-              ),
-              VSFilterItem(
-                id: 'type',
-                label: 'Project Type',
-                icon: Icons.build,
-              ),
-              VSFilterItem(
-                id: 'team',
-                label: 'Team',
-                icon: Icons.group,
-              ),
-              VSFilterItem(
-                id: 'budget',
-                label: 'Budget Range',
-                icon: Icons.attach_money,
-              ),
-            ],
-          ),
-          SizedBox(width: AppSpacing.md),
-          VSFilterDatePicker(
-            title: 'Project Timeline',
-            placeholder: 'Select project dates',
-          ),
-        ],
-      ),
-    ),
-  );
-}
-```
-
-### Customer Support Filters
-
-```dart
-void _showSupportFilters(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (context) => Dialog(
-      backgroundColor: Colors.transparent,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          VSFilter(
-            items: [
-              VSFilterItem(
-                id: 'status',
-                label: 'Ticket Status',
-                icon: Icons.flag,
-              ),
-              VSFilterItem(
-                id: 'priority',
-                label: 'Priority Level',
-                icon: Icons.priority_high,
-              ),
-              VSFilterItem(
-                id: 'type',
-                label: 'Issue Type',
-                icon: Icons.bug_report,
-              ),
-              VSFilterItem(
-                id: 'agent',
-                label: 'Assigned Agent',
-                icon: Icons.support_agent,
-              ),
-              VSFilterItem(
-                id: 'customer',
-                label: 'Customer Type',
-                icon: Icons.person,
-              ),
-            ],
-          ),
-          SizedBox(width: AppSpacing.md),
-          VSFilterDatePicker(
-            title: 'Created Date',
-            placeholder: 'Filter by creation date',
-          ),
-        ],
-      ),
-    ),
-  );
-}
-```
-
-### Interactive Filter with Visual Feedback
-
-```dart
-class InteractiveFilterDemo extends StatefulWidget {
-  @override
-  _InteractiveFilterDemoState createState() => _InteractiveFilterDemoState();
-}
-
-class _InteractiveFilterDemoState extends State<InteractiveFilterDemo> {
-  bool _categoryActive = false;
-  bool _statusActive = false;
-  bool _priorityActive = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        VSFilter(
-          items: [
-            VSFilterItem(
-              id: 'category',
-              label: 'Category',
-              icon: Icons.category,
-              onChanged: (selected) => setState(() => _categoryActive = selected),
-            ),
-            VSFilterItem(
-              id: 'status',
-              label: 'Status',
-              icon: Icons.flag,
-              onChanged: (selected) => setState(() => _statusActive = selected),
-            ),
-            VSFilterItem(
-              id: 'priority',
-              label: 'Priority',
-              icon: Icons.priority_high,
-              onChanged: (selected) => setState(() => _priorityActive = selected),
-            ),
-          ],
-          onReset: () => setState(() {
-            _categoryActive = false;
-            _statusActive = false;
-            _priorityActive = false;
-          }),
-        ),
-        SizedBox(width: AppSpacing.md),
-        Container(
-          width: 200,
-          padding: EdgeInsets.all(AppSpacing.md),
-          decoration: BoxDecoration(
-            color: AppColors.neutral0,
-            border: Border.all(color: AppColors.neutral300),
-            borderRadius: BorderRadius.circular(4),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('Active Filters:', style: AppTypography.bodyMediumSemibold),
-              SizedBox(height: AppSpacing.sm),
-              if (_categoryActive)
-                VSChip(
-                  label: 'Category Filter',
-                  type: VSChipType.color,
-                  variant: VSChipVariant.primary,
-                ),
-              if (_statusActive)
-                VSChip(
-                  label: 'Status Filter',
-                  type: VSChipType.color,
-                  variant: VSChipVariant.secondary,
-                ),
-              if (_priorityActive)
-                VSChip(
-                  label: 'Priority Filter',
-                  type: VSChipType.color,
-                  variant: VSChipVariant.warning,
-                ),
-              if (!_categoryActive && !_statusActive && !_priorityActive)
-                Text('No filters active', style: AppTypography.bodySmallRegular),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
-```
-
 ## Configuration Options
 
-### VSFilter Properties
+### VSFilterButton Properties
 
 | Property | Type | Description | Default |
 |----------|------|-------------|---------|
-| `items` | `List<VSFilterItem>` | List of filter items to display | Required |
-| `onReset` | `VoidCallback?` | Callback when reset button is pressed | `null` |
+| `lsFilterMenuItem` | `List<VSFilterMenuItem>` | List of filter menu items | Required |
+| `lsCustomFilterMenuItem` | `List<VSCustomFilterMenuItem>?` | List of custom filter menu items | `null` |
+| `customFilterNotifier` | `List<ValueNotifier<bool>>?` | Notifiers for custom filters | `null` |
+| `resetCallback` | `VoidCallback?` | Callback when reset is pressed | `null` |
 
-### VSFilterItem Properties
-
-| Property | Type | Description | Default |
-|----------|------|-------------|---------|
-| `id` | `String` | Unique identifier for the filter item | Required |
-| `label` | `String` | Display label for the filter item | Required |
-| `icon` | `IconData?` | Icon to display with the filter item | `null` |
-| `onChanged` | `ValueChanged<bool>?` | Callback when filter selection changes | `null` |
-
-### VSFilterDatePicker Properties
+### VSFilterMenuItem Properties
 
 | Property | Type | Description | Default |
 |----------|------|-------------|---------|
-| `title` | `String` | Title displayed above the date picker | Required |
-| `placeholder` | `String` | Placeholder text for the date input | Required |
+| `icon` | `Widget` | Icon to display | Required |
+| `title` | `String` | Menu title | Required |
+| `lsItem` | `List<DropDownObj>` | List of dropdown items | Required |
+| `lsItemNotifier` | `ValueNotifier<List<DropDownObj>?>?` | Notifier for items | `null` |
+| `initSelected` | `bool?` | Initial selection state | `null` |
+| `withSearch` | `bool` | Enable search functionality | `false` |
+| `isMultiSelect` | `bool` | Allow multiple selections | `false` |
+| `sortItem` | `bool` | Sort items alphabetically | `false` |
+| `searchBarTitle` | `String?` | Search bar placeholder | `null` |
+| `searchBarOnChangeCallback` | `Function(String?)?` | Search callback | `null` |
+| `itemCallback` | `Function(int index)?` | Item selection callback | `null` |
+
+### VSFilterMenuItem2 Properties
+
+| Property | Type | Description | Default |
+|----------|------|-------------|---------|
+| `icon` | `Widget` | Icon to display | Required |
+| `title` | `String` | Menu title | Required |
+| `lsItemNotifier` | `ValueNotifier<List<VSFilterItem>?>` | Notifier for filter items | Required |
+| `isMultiSelect` | `bool` | Allow multiple selections | `false` |
+| `sortItem` | `bool` | Sort items alphabetically | `false` |
+| `searchBarTitle` | `String?` | Search bar placeholder | `null` |
+| `allowUnselect` | `bool` | Allow unselecting items | `false` |
+| `showSelectedOnly` | `bool` | Show only selected items | `true` |
+
+### VSDateRangeFilterMenuItem Properties
+
+| Property | Type | Description | Default |
+|----------|------|-------------|---------|
+| `icon` | `Widget` | Icon to display | Required |
+| `title` | `String` | Menu title | Required |
 | `initialDateRange` | `DateTimeRange?` | Pre-selected date range | `null` |
-| `onDateRangeChanged` | `ValueChanged<DateTimeRange?>?` | Callback when date range changes | `null` |
+| `startDate` | `DateTime?` | Minimum selectable date | `null` |
+| `endDate` | `DateTime?` | Maximum selectable date | `null` |
+
+### VSDateFilterMenuItem Properties
+
+| Property | Type | Description | Default |
+|----------|------|-------------|---------|
+| `icon` | `Widget` | Icon to display | Required |
+| `title` | `String` | Menu title | Required |
+| `initialDate` | `DateTime?` | Pre-selected date | `null` |
+| `firstDate` | `DateTime?` | Minimum selectable date | `null` |
+| `lastDate` | `DateTime?` | Maximum selectable date | `null` |
+
+### VSParentFilterGroup Properties
+
+| Property | Type | Description | Default |
+|----------|------|-------------|---------|
+| `applyCallback` | `VoidCallback` | Callback when apply is pressed | Required |
+| `children` | `List<VSFilterMenuItem2>` | List of filter menu items | Required |
+| `filterKey` | `GlobalKey<PopupMenuButtonState>?` | Key for popup menu | `null` |
 
 ## Best Practices
 

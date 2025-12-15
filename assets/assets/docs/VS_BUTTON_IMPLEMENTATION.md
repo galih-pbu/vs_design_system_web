@@ -1,5 +1,7 @@
 # VS Button
 
+**Version 1.0.1 - December 14, 2025**
+
 The VS Button component provides a flexible and customizable button implementation with multiple variants, sizes, and interactive states.
 
 ## Overview

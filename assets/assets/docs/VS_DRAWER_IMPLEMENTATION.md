@@ -1,5 +1,7 @@
 # VS Drawer
 
+**Version 1.0.1 - December 14, 2025**
+
 The VS Drawer component provides slide-out panels for forms, settings, and configuration dialogs with comprehensive item types and action handling.
 
 ## Overview
@@ -34,18 +36,116 @@ VSDrawer.show(
     ),
   ],
   actions: [
-    VSDrawerAction(
+    VSButton(
       label: 'Cancel',
       onPressed: () {},
       variant: VSButtonVariant.outlined,
     ),
-    VSDrawerAction(
+    VSButton(
       label: 'Save',
       onPressed: () => saveSettings(),
     ),
   ],
 )
 ```
+
+## Custom Width
+
+You can customize the drawer width by providing the `width` parameter:
+
+```dart
+VSDrawer.show(
+  context,
+  title: 'Wide Settings Panel',
+  width: 500.0, // Custom width in pixels
+  items: [
+    VSDrawerItem(
+      label: 'Setting 1',
+      hint: 'Enter value',
+    ),
+    VSDrawerItem(
+      label: 'Setting 2',
+      hint: 'Enter value',
+    ),
+  ],
+  actions: [
+    VSButton(
+      label: 'Cancel',
+      onPressed: () {},
+      variant: VSButtonVariant.outlined,
+    ),
+    VSButton(
+      label: 'Save',
+      onPressed: () => saveSettings(),
+    ),
+  ],
+)
+```
+
+## Using as Scaffold End Drawer
+
+For use as a Scaffold's `endDrawer`, use the `asEndDrawer` static method:
+
+```dart
+Scaffold(
+  appBar: AppBar(
+    title: Text('My App'),
+  ),
+  endDrawer: VSDrawer.asEndDrawer(
+    title: 'Settings',
+    width: 400.0, // Custom width
+    items: [
+      VSDrawerItem(
+        label: 'Theme',
+        type: VSDrawerItemType.dropdown,
+        options: ['Light', 'Dark', 'System'],
+      ),
+      VSDrawerItem(
+        label: 'Language',
+        type: VSDrawerItemType.dropdown,
+        options: ['English', 'Spanish', 'French'],
+      ),
+    ],
+    actions: [
+      VSButton(
+        label: 'Save',
+        onPressed: () => saveSettings(),
+      ),
+    ],
+  ),
+  body: Center(
+    child: Text('Main Content'),
+  ),
+)
+```
+
+## API Reference
+
+### VSDrawer.show() Parameters
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `context` | `BuildContext` | Required | The build context from which to show the drawer |
+| `title` | `String` | Required | The title displayed at the top of the drawer |
+| `items` | `List<VSDrawerItem>` | Required | List of form items to display in the drawer |
+| `onClose` | `VoidCallback?` | `null` | Callback when the drawer is closed |
+| `actions` | `List<VSButton>` | `const []` | List of action buttons at the bottom of the drawer |
+| `showInfoBar` | `bool` | `false` | Whether to show an informational bar at the top |
+| `infoMessage` | `String?` | `null` | Message to display in the info bar |
+| `infoBgColor` | `Color?` | `null` | Background color for the info bar |
+| `infoTextColor` | `Color?` | `null` | Text color for the info bar |
+| `width` | `double?` | `null` | Custom width for the drawer in pixels |
+
+### VSDrawerItem Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `label` | `String` | Required | The label text for the item |
+| `hint` | `String?` | `null` | Placeholder text for text input fields |
+| `type` | `VSDrawerItemType` | `VSDrawerItemType.text` | Type of input field (text or dropdown) |
+| `onTap` | `VoidCallback?` | `null` | Callback when the item is tapped (for custom handling) |
+| `options` | `List<String>?` | `null` | Available options for dropdown items |
+| `onChanged` | `Function(String?)?` | `null` | Callback when the item value changes |
 
 ## Drawer Types
 
@@ -67,12 +167,12 @@ VSDrawer.show(
     ),
   ],
   actions: [
-    VSDrawerAction(
+    VSButton(
       label: 'Cancel',
       onPressed: () {},
       variant: VSButtonVariant.outlined,
     ),
-    VSDrawerAction(
+    VSButton(
       label: 'Update Profile',
       onPressed: () => updateProfile(),
     ),
@@ -100,12 +200,12 @@ VSDrawer.show(
     ),
   ],
   actions: [
-    VSDrawerAction(
+    VSButton(
       label: 'Clear Filters',
       onPressed: () => clearFilters(),
       variant: VSButtonVariant.outlined,
     ),
-    VSDrawerAction(
+    VSButton(
       label: 'Apply Filters',
       onPressed: () => applyFilters(),
     ),
@@ -141,12 +241,12 @@ VSDrawer.show(
     ),
   ],
   actions: [
-    VSDrawerAction(
+    VSButton(
       label: 'Cancel',
       onPressed: () {},
       variant: VSButtonVariant.outlined,
     ),
-    VSDrawerAction(
+    VSButton(
       label: 'Save Contact',
       onPressed: () => saveContact(),
     ),
@@ -179,12 +279,12 @@ VSDrawer.show(
     ),
   ],
   actions: [
-    VSDrawerAction(
+    VSButton(
       label: 'Cancel',
       onPressed: () {},
       variant: VSButtonVariant.outlined,
     ),
-    VSDrawerAction(
+    VSButton(
       label: 'Save Preferences',
       onPressed: () => savePreferences(),
     ),
@@ -224,12 +324,12 @@ VSDrawer.show(
     ),
   ],
   actions: [
-    VSDrawerAction(
+    VSButton(
       label: 'Cancel',
       onPressed: () {},
       variant: VSButtonVariant.outlined,
     ),
-    VSDrawerAction(
+    VSButton(
       label: 'Create Task',
       onPressed: () => createTask(),
     ),
@@ -262,12 +362,12 @@ VSDrawer.show(
     ),
   ],
   actions: [
-    VSDrawerAction(
+    VSButton(
       label: 'Cancel',
       onPressed: () {},
       variant: VSButtonVariant.outlined,
     ),
-    VSDrawerAction(
+    VSButton(
       label: 'Save Changes',
       onPressed: () => saveProjectSettings(),
     ),
@@ -329,7 +429,7 @@ VSDrawer.show(
     ),
   ],
   actions: [
-    VSDrawerAction(
+    VSButton(
       label: 'Verify Code',
       onPressed: () => verifyCode(),
     ),
@@ -356,17 +456,17 @@ VSDrawer.show(
     ),
   ],
   actions: [
-    VSDrawerAction(
+    VSButton(
       label: 'Cancel',
       onPressed: () {},
       variant: VSButtonVariant.outlined,
     ),
-    VSDrawerAction(
+    VSButton(
       label: 'Save Draft',
       onPressed: () => saveDraft(),
       variant: VSButtonVariant.secondary,
     ),
-    VSDrawerAction(
+    VSButton(
       label: 'Publish Now',
       onPressed: () => publishContent(),
     ),
@@ -435,12 +535,12 @@ class ProfileSettings extends StatelessWidget {
         ),
       ],
       actions: [
-        VSDrawerAction(
+        VSButton(
           label: 'Cancel',
           onPressed: () {},
           variant: VSButtonVariant.outlined,
         ),
-        VSDrawerAction(
+        VSButton(
           label: 'Save Changes',
           onPressed: () => _saveProfile(context),
         ),
@@ -496,12 +596,12 @@ class PrivacySettings extends StatelessWidget {
         ),
       ],
       actions: [
-        VSDrawerAction(
+        VSButton(
           label: 'Cancel',
           onPressed: () {},
           variant: VSButtonVariant.outlined,
         ),
-        VSDrawerAction(
+        VSButton(
           label: 'Update Privacy',
           onPressed: () => _updatePrivacy(context),
         ),
@@ -561,12 +661,12 @@ class ProjectSettings extends StatelessWidget {
         ),
       ],
       actions: [
-        VSDrawerAction(
+        VSButton(
           label: 'Cancel',
           onPressed: () {},
           variant: VSButtonVariant.outlined,
         ),
-        VSDrawerAction(
+        VSButton(
           label: 'Save Settings',
           onPressed: () => _saveProjectSettings(context),
         ),
@@ -645,12 +745,12 @@ class ProjectSettings extends StatelessWidget {
         ),
       ],
       actions: [
-        VSDrawerAction(
+        VSButton(
           label: 'Cancel',
           onPressed: () {},
           variant: VSButtonVariant.outlined,
         ),
-        VSDrawerAction(
+        VSButton(
           label: 'Add Member',
           onPressed: () => _addTeamMember(context),
         ),
@@ -698,12 +798,12 @@ class DataManagement extends StatelessWidget {
         ),
       ],
       actions: [
-        VSDrawerAction(
+        VSButton(
           label: 'Cancel',
           onPressed: () {},
           variant: VSButtonVariant.outlined,
         ),
-        VSDrawerAction(
+        VSButton(
           label: 'Start Export',
           onPressed: () => _startExport(context),
         ),
@@ -741,17 +841,17 @@ class DataManagement extends StatelessWidget {
         ),
       ],
       actions: [
-        VSDrawerAction(
+        VSButton(
           label: 'Cancel',
           onPressed: () {},
           variant: VSButtonVariant.outlined,
         ),
-        VSDrawerAction(
+        VSButton(
           label: 'Preview Import',
           onPressed: () => _previewImport(context),
           variant: VSButtonVariant.secondary,
         ),
-        VSDrawerAction(
+        VSButton(
           label: 'Start Import',
           onPressed: () => _startImport(context),
         ),
@@ -863,12 +963,12 @@ class AdvancedFilters extends StatelessWidget {
         ),
       ],
       actions: [
-        VSDrawerAction(
+        VSButton(
           label: 'Clear All',
           onPressed: () => _clearFilters(context),
           variant: VSButtonVariant.outlined,
         ),
-        VSDrawerAction(
+        VSButton(
           label: 'Apply Filters',
           onPressed: () => _applyFilters(context),
         ),
@@ -995,12 +1095,12 @@ class _ValidatedDrawerState extends State<ValidatedDrawer> {
         ),
       ],
       actions: [
-        VSDrawerAction(
+        VSButton(
           label: 'Cancel',
           onPressed: () {},
           variant: VSButtonVariant.outlined,
         ),
-        VSDrawerAction(
+        VSButton(
           label: 'Save Contact',
           onPressed: () => _validateAndSave(context),
         ),
@@ -1089,12 +1189,12 @@ class _DynamicDrawerState extends State<DynamicDrawer> {
         ),
       ],
       actions: [
-        VSDrawerAction(
+        VSButton(
           label: 'Cancel',
           onPressed: () {},
           variant: VSButtonVariant.outlined,
         ),
-        VSDrawerAction(
+        VSButton(
           label: 'Create Item',
           onPressed: () => _createItem(context),
         ),

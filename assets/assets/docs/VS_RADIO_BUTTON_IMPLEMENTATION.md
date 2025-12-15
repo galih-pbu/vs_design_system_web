@@ -1,5 +1,7 @@
 # VS Radio Button Implementation
 
+**Version 1.0.1 - December 14, 2025**
+
 ## Overview
 
 The VS Radio Button component provides single-selection controls for forms and settings with VS Design System styling. Radio buttons allow users to select one option from a set of mutually exclusive choices.

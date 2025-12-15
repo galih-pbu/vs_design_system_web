@@ -1,5 +1,7 @@
 # VS Page Not Found Implementation
 
+**Version 1.0.1 - December 14, 2025**
+
 ## Overview
 
 The VS Page Not Found component provides a standardized 404 error page layout with VS Design System styling and consistent messaging. It displays a large "404" number, clear error messaging, and a primary action button for navigation.
@@ -9,7 +11,7 @@ The VS Page Not Found component provides a standardized 404 error page layout wi
 - **Standardized 404 Layout**: Consistent error page design across applications
 - **Large Visual Impact**: Prominent "404" display for immediate recognition
 - **Clear Messaging**: Descriptive text explaining the error state
-- **Primary Action**: "Go Back Home" button for user navigation
+- **Primary Action**: "Go Back Home" button that shows a toast notification
 - **Responsive Design**: Adapts to different screen sizes with max-width constraints
 - **VS Design System Integration**: Uses consistent colors, typography, and spacing
 - **Accessibility**: Proper semantic structure and readable text hierarchy
@@ -586,7 +588,12 @@ class MobileNotFoundPage extends StatelessWidget {
 
               VSButton(
                 label: 'Go Back',
-                onPressed: () => Navigator.pop(context),
+                onPressed: () => VSToastService.showToast(
+                  context,
+                  title: 'Navigation',
+                  description: 'This would navigate back to previous page',
+                  type: VSToastType.info,
+                ),
                 size: VSButtonSize.small,
                 width: double.infinity,
               ),

@@ -1,5 +1,7 @@
 # VS Menu
 
+**Version 1.0.1 - December 14, 2025**
+
 The VS Menu component provides vertical navigation with collapsible sections, icons, and customizable styling for sidebar navigation.
 
 ## Overview

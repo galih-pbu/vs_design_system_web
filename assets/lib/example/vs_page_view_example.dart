@@ -1,15 +1,64 @@
 import 'package:flutter/material.dart';
 import 'package:vs_design_system/vs_design_system.dart';
 
-class VSPageViewExample extends StatelessWidget {
+class VSPageViewExample extends StatefulWidget {
   const VSPageViewExample({super.key});
+
+  @override
+  State<VSPageViewExample> createState() => _VSPageViewExampleState();
+}
+
+class _VSPageViewExampleState extends State<VSPageViewExample> {
+  // Filter state management using ValueNotifier (matching reference pattern)
+  final ValueNotifier<List<VSFilterItem>?> statusNotifier = ValueNotifier([
+    VSFilterItem(name: 'Active', id: 'active'),
+    VSFilterItem(name: 'Inactive', id: 'inactive'),
+  ]);
+
+  final ValueNotifier<List<VSFilterItem>?> categoryNotifier = ValueNotifier([
+    VSFilterItem(name: 'Electronics', id: 'electronics'),
+    VSFilterItem(name: 'Clothing', id: 'clothing'),
+    VSFilterItem(name: 'Books', id: 'books'),
+  ]);
+
+  // Filter widget method (following reference pattern from invoice_page.dart)
+  Widget filterWidget() {
+    return VSParentFilterGroup(
+      applyCallback: () {
+        VSToastService.showToast(
+          context,
+          title: 'Applied',
+          description: 'Page view filter applied successfully',
+          type: VSToastType.success,
+        );
+      },
+      children: [
+        VSFilterMenuItem2(
+          icon: VSIcon(name: VSIcons.user, size: 16),
+          title: 'Status',
+          lsItemNotifier: statusNotifier,
+          isMultiSelect: false,
+        ),
+        VSFilterMenuItem2(
+          icon: VSIcon(name: VSIcons.filterFunnel, size: 16),
+          title: 'Category',
+          lsItemNotifier: categoryNotifier,
+          isMultiSelect: true,
+        ),
+        VSDateFilterMenuItem(
+          icon: VSIcon(name: VSIcons.calendar, size: 16),
+          title: 'Created Date',
+          initialDate: DateTime.now(),
+          firstDate: DateTime(2020),
+          lastDate: DateTime(2025),
+        ),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: VSAppBar(
-      //   title: 'VS Page View Examples',
-      // ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(AppSpacing.lg),
         child: Column(
@@ -17,7 +66,7 @@ class VSPageViewExample extends StatelessWidget {
           children: [
             _buildSection(
               title: 'VS Page View Examples',
-              description: 'Comprehensive demonstration of page view widget with various configurations',
+              description: 'Comprehensive demonstration of page view widget with various configurations using design system components',
               child: _buildPageViewShowcase(context),
             ),
           ],
@@ -59,7 +108,7 @@ class VSPageViewExample extends StatelessWidget {
         // Basic Page View
         _buildPageViewGroup(
           title: 'Basic Page View',
-          description: 'Simple page view with title and table content',
+          description: 'Simple page view with title and table content using design system components',
           child: Container(
             height: 400,
             decoration: BoxDecoration(
@@ -69,7 +118,7 @@ class VSPageViewExample extends StatelessWidget {
             child: VSPageView(
               isMobile: false,
               title: 'Basic Page View',
-              tableContent: _buildSampleTable(),
+              tableContent: _buildSampleTable(context),
             ),
           ),
         ),
@@ -79,26 +128,35 @@ class VSPageViewExample extends StatelessWidget {
         // Page View with Search
         _buildPageViewGroup(
           title: 'Page View with Search',
-          description: 'Page view including search functionality',
-          child: Container(
-            height: 400,
-            decoration: BoxDecoration(
-              border: Border.all(color: AppColors.neutral300),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: VSPageView(
-              isMobile: false,
-              title: 'Searchable Page View',
-              searchCallback: (query) {
-                VSToastService.showToast(
-                  context,
-                  title: 'Search',
-                  description: 'Searching for: "$query"',
-                  type: VSToastType.info,
-                );
-              },
-              tableContent: _buildSampleTable(),
-            ),
+          description: 'Page view including search functionality and info bar',
+          child: Column(
+            children: [
+              VSInfoBar(
+                message: 'Use the search functionality to filter results in real-time',
+                type: VSInfoBarType.info,
+              ),
+              SizedBox(height: AppSpacing.md),
+              Container(
+                height: 400,
+                decoration: BoxDecoration(
+                  border: Border.all(color: AppColors.neutral300),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: VSPageView(
+                  isMobile: false,
+                  title: 'Searchable Page View',
+                  searchCallback: (query) {
+                    VSToastService.showToast(
+                      context,
+                      title: 'Search',
+                      description: 'Searching for: "$query"',
+                      type: VSToastType.info,
+                    );
+                  },
+                  tableContent: _buildSampleTable(context),
+                ),
+              ),
+            ],
           ),
         ),
 
@@ -107,27 +165,39 @@ class VSPageViewExample extends StatelessWidget {
         // Page View with Add Button
         _buildPageViewGroup(
           title: 'Page View with Add Button',
-          description: 'Page view with add button functionality',
-          child: Container(
-            height: 400,
-            decoration: BoxDecoration(
-              border: Border.all(color: AppColors.neutral300),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: VSPageView(
-              isMobile: false,
-              title: 'Page with Add Button',
-              addButtonCallback: () {
-                VSToastService.showToast(
-                  context,
-                  title: 'Add Button',
-                  description: 'Add button clicked',
-                  type: VSToastType.info,
-                );
-              },
-              customNameButtonAdd: 'Add New Item',
-              tableContent: _buildSampleTable(),
-            ),
+          description: 'Page view with add button functionality and action buttons',
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  VSBadge(
+                    label: 'FEATURED',
+                    variant: VSBadgeVariant.primary,
+                  ),
+                  SizedBox(width: AppSpacing.sm),
+                  VSChip(
+                    label: 'Quick Actions',
+                    type: VSChipType.color,
+                    variant: VSChipVariant.secondary,
+                  ),
+                ],
+              ),
+              SizedBox(height: AppSpacing.md),
+              Container(
+                height: 400,
+                decoration: BoxDecoration(
+                  border: Border.all(color: AppColors.neutral300),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: VSPageView(
+                  isMobile: false,
+                  title: 'Page with Add Button',
+                  addButtonCallback: () => _showAddItemDrawer(context),
+                  customNameButtonAdd: 'Add New Item',
+                  tableContent: _buildSampleTable(context),
+                ),
+              ),
+            ],
           ),
         ),
 
@@ -156,7 +226,7 @@ class VSPageViewExample extends StatelessWidget {
                   type: VSToastType.info,
                 );
               },
-              tableContent: _buildSampleTable(),
+              tableContent: _buildSampleTable(context),
             ),
           ),
         ),
@@ -192,7 +262,7 @@ class VSPageViewExample extends StatelessWidget {
                   type: VSToastType.info,
                 );
               },
-              tableContent: _buildSampleTable(),
+              tableContent: _buildSampleTable(context),
             ),
           ),
         ),
@@ -212,7 +282,7 @@ class VSPageViewExample extends StatelessWidget {
             child: VSPageView(
               isMobile: false,
               title: 'Page with Footer',
-              tableContent: _buildSampleTable(),
+              tableContent: _buildSampleTable(context),
               footer: Container(
                 padding: EdgeInsets.all(AppSpacing.md),
                 color: AppColors.neutral100,
@@ -273,14 +343,7 @@ class VSPageViewExample extends StatelessWidget {
                   type: VSToastType.info,
                 );
               },
-              addButtonCallback: () {
-                VSToastService.showToast(
-                  context,
-                  title: 'Add Item',
-                  description: 'Add new item',
-                  type: VSToastType.info,
-                );
-              },
+              addButtonCallback: () => _showAddItemDrawer(context),
               tabs: ['All Items', 'Active', 'Archived'],
               status: 1,
               tabbarOnTap: (index) {
@@ -335,20 +398,27 @@ class VSPageViewExample extends StatelessWidget {
                   ),
                 ),
               ],
-              customWidgetRight: VSButton(
-                label: 'Custom Action',
-                onPressed: () {
-                  VSToastService.showToast(
-                    context,
-                    title: 'Custom Action',
-                    description: 'Custom action executed',
-                    type: VSToastType.success,
-                  );
-                },
-                size: VSButtonSize.small,
-                variant: VSButtonVariant.secondary,
+              customWidgetRight: Row(
+                children: [
+                  filterWidget(),
+                  SizedBox(width: AppSpacing.sm),
+                  VSButton(
+                    label: 'Export',
+                    leftIcon: Icons.download,
+                    onPressed: () {
+                      VSToastService.showToast(
+                        context,
+                        title: 'Export',
+                        description: 'Data exported successfully',
+                        type: VSToastType.success,
+                      );
+                    },
+                    size: VSButtonSize.small,
+                    variant: VSButtonVariant.secondary,
+                  ),
+                ],
               ),
-              tableContent: _buildSampleTable(),
+              tableContent: _buildSampleTable(context),
               footer: Container(
                 padding: EdgeInsets.all(AppSpacing.md),
                 color: AppColors.neutral100,
@@ -396,110 +466,238 @@ class VSPageViewExample extends StatelessWidget {
     );
   }
 
-  Widget _buildSampleTable() {
-    return Container(
-      padding: EdgeInsets.all(AppSpacing.md),
-      child: Column(
-        children: [
-          // Table Header
-          Container(
-            padding: EdgeInsets.symmetric(vertical: AppSpacing.sm),
-            decoration: BoxDecoration(
-              border: Border(bottom: BorderSide(color: AppColors.neutral300)),
+  Widget _buildSampleTable(BuildContext context) {
+    return VsTableDynamic(
+      tableWidth: double.infinity, // Use full width
+      useAutoWidth: true, // Enable auto width for full expansion
+      tableData: _createSampleTableData(),
+      totalCount: 25, // Total count for pagination
+      currentPage: 1,
+      pageSize: 10,
+      showPagination: true,
+      onPageChange: (page) {
+        VSToastService.showToast(
+          context,
+          title: 'Page Changed',
+          description: 'Navigated to page $page',
+          type: VSToastType.info,
+        );
+      },
+      // Remove onSearchChanged to prevent duplicate search bars
+    );
+  }
+
+  TableData _createSampleTableData() {
+    return TableData(
+      header: [
+        TableHeader(
+          fieldName: 'name',
+          label: 'Name',
+          toolTip: 'Item Name',
+          typeData: TypeData.string, 
+        ),
+        TableHeader(
+          fieldName: 'status',
+          label: 'Status',
+          toolTip: 'Item Status',
+          typeData: TypeData.widget, 
+        ),
+        TableHeader(
+          fieldName: 'date',
+          label: 'Date',
+          toolTip: 'Created Date',
+          typeData: TypeData.string, 
+        ),
+        TableHeader(
+          fieldName: 'actions',
+          label: 'Actions',
+          toolTip: 'Available Actions',
+          typeData: TypeData.widget, 
+        ),
+      ],
+      detail: List.generate(25, (index) {
+        final isActive = index % 2 == 0;
+        return RowData(
+          rowData: [
+            ColumnData(
+              data: 'Sample Item ${index + 1}',
+              typeData: TypeData.string,
             ),
-            child: Row(
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: Text(
-                    'Name',
-                    style: AppTypography.bodySmallSemibold,
-                  ),
+            ColumnData(
+              data: Container(
+                alignment: Alignment.centerLeft,
+                child: VSBadge(
+                  label: isActive ? 'Active' : 'Inactive',
+                  variant: isActive ? VSBadgeVariant.success : VSBadgeVariant.secondary,
+                  size: VSBadgeSize.xsmall,
                 ),
-                Expanded(
-                  flex: 1,
-                  child: Text(
-                    'Status',
-                    style: AppTypography.bodySmallSemibold,
-                  ),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: Text(
-                    'Date',
-                    style: AppTypography.bodySmallSemibold,
-                  ),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: Text(
-                    'Actions',
-                    style: AppTypography.bodySmallSemibold,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          // Sample Rows
-          ...List.generate(5, (index) {
-            return Container(
-              padding: EdgeInsets.symmetric(vertical: AppSpacing.sm),
-              decoration: BoxDecoration(
-                border: Border(bottom: BorderSide(color: AppColors.neutral200)),
               ),
-              child: Row(
+              typeData: TypeData.widget,
+            ),
+            ColumnData(
+              data: '2025-12-09',
+              typeData: TypeData.string,
+            ),
+            ColumnData(
+              data: Row(
                 children: [
-                  Expanded(
-                    flex: 2,
-                    child: Text(
-                      'Sample Item ${index + 1}',
-                      style: AppTypography.bodySmallRegular,
+                  VSButton(
+                    label: 'Edit',
+                    onPressed: () {},
+                    size: VSButtonSize.xsmall,
+                    variant: VSButtonVariant.outlined,
+                  ),
+                  SizedBox(width: AppSpacing.xs),
+                  VSButton(
+                    label: 'Delete',
+                    onPressed: () {},
+                    size: VSButtonSize.xsmall,
+                    variant: VSButtonVariant.danger,
+                  ),
+                ],
+              ),
+              typeData: TypeData.widget,
+            ),
+          ],
+        );
+      }),
+    );
+  }
+
+  void _showAddItemDrawer(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return Align(
+          alignment: Alignment.centerRight,
+          child: Material(
+            color: Colors.transparent,
+            child: Container(
+              width: 358,
+              height: double.infinity,
+              decoration: BoxDecoration(
+                color: AppColors.neutral0,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(8),
+                  bottomLeft: Radius.circular(8),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 10,
+                    offset: Offset(-5, 0),
+                  ),
+                ],
+              ),
+              child: Column(
+                children: [
+                  // Header
+                  Container(
+                    padding: EdgeInsets.all(AppSpacing.md),
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(color: AppColors.neutral200),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Add New Item',
+                          style: AppTypography.h4,
+                        ),
+                        IconButton(
+                          onPressed: () => VSToastService.showToast(
+                            context,
+                            title: 'Dialog Closed',
+                            description: 'Add item dialog has been closed',
+                            type: VSToastType.info,
+                          ),
+                          icon: Icon(Icons.close),
+                        ),
+                      ],
                     ),
                   ),
+                  // Content
                   Expanded(
-                    flex: 1,
-                    child: Container(
-                      alignment: Alignment.centerLeft,
-                      child: VSBadge(
-                        label: index % 2 == 0 ? 'Active' : 'Inactive',
-                        variant: index % 2 == 0 ? VSBadgeVariant.success : VSBadgeVariant.secondary,
-                        size: VSBadgeSize.xsmall,
+                    child: SingleChildScrollView(
+                      padding: EdgeInsets.all(AppSpacing.md),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          VSInputField(
+                            label: 'Item Name',
+                            hintText: 'Enter item name',
+                            type: VSInputFieldType.text,
+                            isRequired: true,
+                          ),
+                          SizedBox(height: AppSpacing.md),
+                          VSInputField(
+                            label: 'Description',
+                            hintText: 'Enter item description',
+                            type: VSInputFieldType.textarea,
+                          ),
+                          SizedBox(height: AppSpacing.md),
+                          VSInputField(
+                            label: 'Category',
+                            hintText: 'Select category',
+                            type: VSInputFieldType.text,
+                            dropdownOptions: ['Electronics', 'Clothing', 'Books', 'Home & Garden'],
+                          ),
+                          SizedBox(height: AppSpacing.md),
+                          VSInputField(
+                            label: 'Price',
+                            hintText: 'Enter price',
+                            type: VSInputFieldType.currency,
+                            currencySymbol: 'Rp',
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                  Expanded(
-                    flex: 1,
-                    child: Text(
-                      '2025-12-09',
-                      style: AppTypography.bodySmallRegular,
+                  // Actions
+                  Container(
+                    padding: EdgeInsets.all(AppSpacing.md),
+                    decoration: BoxDecoration(
+                      border: Border(
+                        top: BorderSide(color: AppColors.neutral200),
+                      ),
                     ),
-                  ),
-                  Expanded(
-                    flex: 1,
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         VSButton(
-                          label: 'Edit',
-                          onPressed: () {},
-                          size: VSButtonSize.xsmall,
+                          label: 'Cancel',
+                          onPressed: () => VSToastService.showToast(
+                            context,
+                            title: 'Cancelled',
+                            description: 'Add item operation cancelled',
+                            type: VSToastType.warning,
+                          ),
                           variant: VSButtonVariant.outlined,
+                          size: VSButtonSize.small,
                         ),
-                        SizedBox(width: AppSpacing.xs),
+                        SizedBox(width: AppSpacing.sm),
                         VSButton(
-                          label: 'Delete',
-                          onPressed: () {},
-                          size: VSButtonSize.xsmall,
-                          variant: VSButtonVariant.danger,
+                          label: 'Add Item',
+                          onPressed: () => VSToastService.showToast(
+                            context,
+                            title: 'Item Added',
+                            description: 'New item has been added successfully',
+                            type: VSToastType.success,
+                          ),
+                          size: VSButtonSize.small,
                         ),
                       ],
                     ),
                   ),
                 ],
               ),
-            );
-          }),
-        ],
-      ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

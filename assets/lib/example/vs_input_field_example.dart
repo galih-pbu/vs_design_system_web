@@ -10,6 +10,30 @@ class VSInputFieldExample extends StatefulWidget {
 }
 
 class _VSInputFieldExampleState extends State<VSInputFieldExample> {
+  final TextEditingController _clearController = TextEditingController(text: 'Sample text');
+  bool _isInteractiveLoading = false;
+  List<String> _dropdownOptions = [];
+  String? _selectedDropdownValue;
+  bool _hasLoadedDropdown = false;
+  late final FocusNode _dropdownFocusNode;
+  late final TextEditingController _dropdownController;
+
+  @override
+  void initState() {
+    super.initState();
+    _dropdownFocusNode = FocusNode()
+      ..addListener(() {
+        if (!_hasLoadedDropdown && !_isInteractiveLoading) {
+          _handleInteractiveLoading();
+        }
+      });
+    _dropdownController = TextEditingController();
+    // Load dropdown data on init
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _handleInteractiveLoading();
+    });
+  }
+
   Widget _buildSection({
     required String title,
     required String description,
@@ -20,7 +44,9 @@ class _VSInputFieldExampleState extends State<VSInputFieldExample> {
       children: [
         Text(
           title,
-          style: AppTypography.h3,
+          style: AppTypography.h3.copyWith(
+            color: AppColors.textPrimary,
+          ),
         ),
         SizedBox(height: AppSpacing.sm),
         Text(
@@ -29,763 +55,407 @@ class _VSInputFieldExampleState extends State<VSInputFieldExample> {
             color: AppColors.textSecondary,
           ),
         ),
-        SizedBox(height: AppSpacing.lg),
+        SizedBox(height: AppSpacing.md),
         child,
-        SizedBox(height: AppSpacing.xl),
       ],
     );
+  }
+
+  void _handleInteractiveLoading() async {
+    setState(() {
+      _isInteractiveLoading = true;
+      _dropdownOptions = [];
+      _selectedDropdownValue = null;
+      _hasLoadedDropdown = true;
+    });
+    _dropdownController.clear();
+
+    // Simulate API call
+    await Future.delayed(const Duration(seconds: 2));
+
+    setState(() {
+      _isInteractiveLoading = false;
+      _dropdownOptions = ['Option 1', 'Option 2', 'Option 3', 'Option 4'];
+    });
   }
 
   Widget buildInputFieldShowcase() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Basic Input Fields
-        Text(
-          'Basic Input Fields',
-          style: AppTypography.bodyLargeSemibold.copyWith(
-            color: AppColors.textSecondary,
-          ),
-        ),
-        SizedBox(height: AppSpacing.md),
-
-        // Basic Input
-        VSInputField(
-          label: 'Name',
-          hintText: 'Enter your name',
-          onChanged: (value) {
-            VSToastService.showToast(
-              context,
-              title: 'Input Changed',
-              description: 'Name: "$value"',
-              type: VSToastType.info,
-            );
-          },
-        ),
-        SizedBox(height: AppSpacing.lg),
-
-        // Email (Required)
-        VSInputField(
-          label: 'Email',
-          isRequired: true,
-          type: VSInputFieldType.email,
-          hintText: 'user@email.com',
-          onChanged: (value) {
-            VSToastService.showToast(
-              context,
-              title: 'Email Input',
-              description: 'Email: "$value"',
-              type: VSToastType.info,
-            );
-          },
-        ),
-        SizedBox(height: AppSpacing.lg),
-
-        // Password
-        VSInputField(
-          label: 'Password',
-          type: VSInputFieldType.password,
-          hintText: 'Enter password',
-          onChanged: (value) {
-            VSToastService.showToast(
-              context,
-              title: 'Password Input',
-              description: 'Password length: ${value.length}',
-              type: VSToastType.info,
-            );
-          },
-        ),
-        SizedBox(height: AppSpacing.lg),
-
-        // With Error
-        VSInputField(
-          label: 'Phone',
-          errorText: 'Invalid phone number',
-          hintText: 'Enter phone',
-        ),
-        SizedBox(height: AppSpacing.lg),
-
-        // Disabled
-        VSInputField(
-          label: 'Username (Disabled)',
-          initialValue: 'readonly_user',
-          isEnabled: false,
-        ),
-        SizedBox(height: AppSpacing.sm),
-        Text(
-          'Disabled fields show gray background and cannot be edited',
-          style: AppTypography.bodySmallRegular.copyWith(
-            color: AppColors.textSecondary,
-            fontStyle: FontStyle.italic,
-          ),
-        ),
-        SizedBox(height: AppSpacing.lg),
-
-        // Required with Placeholder
-        VSInputField(
-          label: 'Tenor',
-          isRequired: true,
-          hintText: 'e.g 25',
-        ),
-        SizedBox(height: AppSpacing.lg),
-
-        // Filled State
-        VSInputField(
-          label: 'Tenor',
-          isRequired: true,
-          initialValue: '25',
-        ),
-        SizedBox(height: AppSpacing.lg),
-
-        // Multiline (Textarea)
-        VSInputField(
-          label: 'Description',
-          type: VSInputFieldType.textarea,
-        ),
-        SizedBox(height: AppSpacing.lg),
-
-        // Number Fields Section
-        Text(
-          'Number Fields',
-          style: AppTypography.bodyLargeSemibold.copyWith(
-            color: AppColors.textSecondary,
-          ),
-        ),
-        SizedBox(height: AppSpacing.md),
-
-        Row(
-          children: [
-            Expanded(
-              child: VSInputField(
-                label: 'Integer',
-                type: VSInputFieldType.integer,
+        // Basic Text Fields
+        _buildSection(
+          title: 'Basic Text Fields',
+          description: 'Standard text input fields with different types',
+          child: Column(
+            children: [
+              VSInputField(
+                label: 'Text Field',
+                hintText: 'Enter any text',
+                type: VSInputFieldType.text,
               ),
-            ),
-            SizedBox(width: AppSpacing.md),
-            Expanded(
-              child: VSInputField(
-                label: 'Decimal',
-                type: VSInputFieldType.decimal,
-              ),
-            ),
-            SizedBox(width: AppSpacing.md),
-            Expanded(
-              child: VSInputField(
-                label: 'Percent',
-                type: VSInputFieldType.percent,
-                suffix: '%',
-              ),
-            ),
-          ],
-        ),
-        SizedBox(height: AppSpacing.lg),
+              SizedBox(height: AppSpacing.md),
 
-        // Currency Fields Section
-        Text(
-          'Currency Fields',
-          style: AppTypography.bodyLargeSemibold.copyWith(
-            color: AppColors.textSecondary,
-          ),
-        ),
-        SizedBox(height: AppSpacing.md),
+              VSInputField(
+                label: 'Password Field',
+                hintText: 'Enter password',
+                type: VSInputFieldType.password,
+              ),
+              SizedBox(height: AppSpacing.md),
 
-        Row(
-          children: [
-            Expanded(
-              child: VSInputField(
-                label: 'Price',
-                type: VSInputFieldType.currency,
-                prefix: '\$',
-              ),
-            ),
-            SizedBox(width: AppSpacing.md),
-            Expanded(
-              child: VSInputField(
-                label: 'Amount (Rp)',
-                type: VSInputFieldType.currency,
-                prefix: 'Rp',
-                initialValue: InputFieldHelper.formatCurrency(1234567.89),
-              ),
-            ),
-          ],
-        ),
-        SizedBox(height: AppSpacing.lg),
-
-        // Date & Time Fields Section
-        Text(
-          'Date & Time Fields',
-          style: AppTypography.bodyLargeSemibold.copyWith(
-            color: AppColors.textSecondary,
-          ),
-        ),
-        SizedBox(height: AppSpacing.md),
-
-        Wrap(
-          spacing: AppSpacing.md,
-          runSpacing: AppSpacing.md,
-          children: [
-            SizedBox(
-              width: 180,
-              child: VSInputField(
-                label: 'Date',
-                type: VSInputFieldType.date,
-              ),
-            ),
-            SizedBox(
-              width: 220,
-              child: VSInputField(
-                label: 'Date & Time',
-                type: VSInputFieldType.dateTime,
-              ),
-            ),
-            SizedBox(
-              width: 120,
-              child: VSInputField(
-                label: 'Time',
-                type: VSInputFieldType.time,
-              ),
-            ),
-            SizedBox(
-              width: 280,
-              child: VSInputField(
-                label: 'Date Range',
-                type: VSInputFieldType.dateRange,
-              ),
-            ),
-          ],
-        ),
-        SizedBox(height: AppSpacing.lg),
-
-        // Phone, Email & URL Fields
-        Text(
-          'Phone, Email & URL Fields',
-          style: AppTypography.bodyLargeSemibold.copyWith(
-            color: AppColors.textSecondary,
-          ),
-        ),
-        SizedBox(height: AppSpacing.md),
-
-        Wrap(
-          spacing: AppSpacing.md,
-          runSpacing: AppSpacing.md,
-          children: [
-            SizedBox(
-              width: 200,
-              child: VSInputField(
-                label: 'Phone Number',
-                type: VSInputFieldType.phone,
-                leading: Icon(
-                  Icons.phone,
-                  size: 16,
-                  color: AppColors.neutral500,
-                ),
-              ),
-            ),
-            SizedBox(
-              width: 250,
-              child: VSInputField(
-                label: 'Email',
+              VSInputField(
+                label: 'Email Field',
+                hintText: 'user@example.com',
                 type: VSInputFieldType.email,
-                leading: Icon(
-                  Icons.email,
-                  size: 16,
-                  color: AppColors.neutral500,
-                ),
               ),
-            ),
-            SizedBox(
-              width: 250,
-              child: VSInputField(
-                label: 'Website',
+              SizedBox(height: AppSpacing.md),
+
+              VSInputField(
+                label: 'URL Field',
+                hintText: 'https://example.com',
                 type: VSInputFieldType.url,
-                leading: Icon(
-                  Icons.language,
-                  size: 16,
-                  color: AppColors.neutral500,
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: AppSpacing.lg),
+
+        // Number Fields
+        _buildSection(
+          title: 'Number Fields',
+          description: 'Numeric input fields with automatic formatting',
+          child: Wrap(
+            spacing: AppSpacing.md,
+            runSpacing: AppSpacing.md,
+            children: [
+              SizedBox(
+                width: 150,
+                child: VSInputField(
+                  label: 'Integer',
+                  type: VSInputFieldType.integer,
                 ),
               ),
-            ),
-          ],
+              SizedBox(
+                width: 150,
+                child: VSInputField(
+                  label: 'Decimal',
+                  type: VSInputFieldType.decimal,
+                ),
+              ),
+              SizedBox(
+                width: 150,
+                child: VSInputField(
+                  label: 'Percent',
+                  type: VSInputFieldType.percent,
+                  suffix: '%',
+                ),
+              ),
+              SizedBox(
+                width: 180,
+                child: VSInputField(
+                  label: 'Currency',
+                  type: VSInputFieldType.currency,
+                  prefix: 'Rp',
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: AppSpacing.lg),
+
+        // Date & Time Fields
+        _buildSection(
+          title: 'Date & Time Fields',
+          description: 'Date and time picker fields',
+          child: Wrap(
+            spacing: AppSpacing.md,
+            runSpacing: AppSpacing.md,
+            children: [
+              SizedBox(
+                width: 150,
+                child: VSInputField(
+                  label: 'Date',
+                  type: VSInputFieldType.date,
+                ),
+              ),
+              SizedBox(
+                width: 150,
+                child: VSInputField(
+                  label: 'Time',
+                  type: VSInputFieldType.time,
+                ),
+              ),
+              SizedBox(
+                width: 200,
+                child: VSInputField(
+                  label: 'Date & Time',
+                  type: VSInputFieldType.dateTime,
+                ),
+              ),
+              SizedBox(
+                width: 250,
+                child: VSInputField(
+                  label: 'Date Range',
+                  type: VSInputFieldType.dateRange,
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: AppSpacing.lg),
+
+        // Phone Field with Country Flag
+        _buildSection(
+          title: 'Phone Field',
+          description: 'Phone input with country code selection',
+          child: Wrap(
+            spacing: AppSpacing.md,
+            runSpacing: AppSpacing.md,
+            children: [
+              SizedBox(
+                width: 200,
+                child: VSInputField(
+                  label: 'Phone (Code)',
+                  type: VSInputFieldType.phone,
+                ),
+              ),
+              SizedBox(
+                width: 220,
+                child: VSInputField(
+                  label: 'Phone (Flag)',
+                  type: VSInputFieldType.phone,
+                  showCountryFlag: true,
+                ),
+              ),
+              SizedBox(
+                width: 240,
+                child: VSInputField(
+                  label: 'Phone (Flag + Code)',
+                  type: VSInputFieldType.phone,
+                  showCountryFlagAndCode: true,
+                ),
+              ),
+            ],
+          ),
         ),
         SizedBox(height: AppSpacing.lg),
 
         // Search Field
-        Text(
-          'Search Field',
-          style: AppTypography.bodyLargeSemibold.copyWith(
-            color: AppColors.textSecondary,
-          ),
-        ),
-        SizedBox(height: AppSpacing.md),
-
-        VSInputField(
-          type: VSInputFieldType.search,
-          hintText: 'Search contacts...',
-        ),
-        SizedBox(height: AppSpacing.lg),
-
-        // Search with Debounce
-        Text(
-          'Search with Debounce (500ms)',
-          style: AppTypography.bodyMediumSemibold,
-        ),
-        SizedBox(height: AppSpacing.sm),
-        VSInputField(
-          type: VSInputFieldType.search,
-          hintText: 'Search with 500ms debounce...',
-          debounceDuration: Duration(milliseconds: 500),
-          onChanged: (value) {
-            VSToastService.showToast(
-              context,
-              title: 'Debounced Search',
-              description: 'Searching for: "$value"',
-              type: VSToastType.info,
-            );
-          },
-        ),
-        SizedBox(height: AppSpacing.lg),
-
-        // Search on Enter
-        Text(
-          'Search on Enter Key Press',
-          style: AppTypography.bodyMediumSemibold,
-        ),
-        SizedBox(height: AppSpacing.sm),
-        VSInputField(
-          type: VSInputFieldType.search,
-          hintText: 'Press Enter to search...',
-          triggerOnEnter: true,
-          onChanged: (value) {
-            VSToastService.showToast(
-              context,
-              title: 'Search Triggered',
-              description: 'Searching for: "$value"',
-              type: VSToastType.success,
-            );
-          },
-        ),
-        SizedBox(height: AppSpacing.lg),
-
-        // Auto-Number (Read-only with disabled styling)
-        Text(
-          'Auto-Number (Read-only with Disabled Styling)',
-          style: AppTypography.bodyLargeSemibold.copyWith(
-            color: AppColors.textSecondary,
-          ),
-        ),
-        SizedBox(height: AppSpacing.md),
-
-        VSInputField(
-          label: 'Record ID',
-          type: VSInputFieldType.autoNumber,
-          initialValue: 'AUTO-00123',
-        ),
-        SizedBox(height: AppSpacing.sm),
-        Text(
-          'Read-only fields automatically display with disabled background and text color',
-          style: AppTypography.bodySmallRegular.copyWith(
-            color: AppColors.textSecondary,
-            fontStyle: FontStyle.italic,
+        _buildSection(
+          title: 'Search Field',
+          description: 'Search input with built-in search icon',
+          child: VSInputField(
+            type: VSInputFieldType.search,
+            hintText: 'Search...',
           ),
         ),
         SizedBox(height: AppSpacing.lg),
 
-        // Read-only Field
-        Text(
-          'Read-only Field',
-          style: AppTypography.bodyLargeSemibold.copyWith(
-            color: AppColors.textSecondary,
-          ),
-        ),
-        SizedBox(height: AppSpacing.md),
-
-        VSInputField(
-          label: 'System Generated Code',
-          initialValue: 'SYS-2025-001',
-          isReadOnly: true,
-        ),
-        SizedBox(height: AppSpacing.sm),
-        Text(
-          'Fields with isReadOnly: true also display with disabled styling',
-          style: AppTypography.bodySmallRegular.copyWith(
-            color: AppColors.textSecondary,
-            fontStyle: FontStyle.italic,
+        // Textarea
+        _buildSection(
+          title: 'Textarea',
+          description: 'Multi-line text input',
+          child: VSInputField(
+            label: 'Description',
+            type: VSInputFieldType.textarea,
+            hintText: 'Enter description...',
+            minLines: 3,
           ),
         ),
         SizedBox(height: AppSpacing.lg),
-        Text(
-          'Enhanced Features',
-          style: AppTypography.bodyLargeSemibold.copyWith(
-            color: AppColors.textSecondary,
-          ),
-        ),
-        SizedBox(height: AppSpacing.md),
 
-        // Label Control
-        Text(
-          'Label Control',
-          style: AppTypography.bodyMediumSemibold,
-        ),
-        SizedBox(height: AppSpacing.sm),
-        Row(
-          children: [
-            Expanded(
-              child: VSInputField(
-                label: 'With Label',
-                hintText: 'Field with visible label',
-                showLabel: true,
+        // Field States
+        _buildSection(
+          title: 'Field States',
+          description: 'Different field states and configurations',
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: VSInputField(
+                      label: 'Required Field',
+                      hintText: 'This field is required',
+                      isRequired: true,
+                    ),
+                  ),
+                  SizedBox(width: AppSpacing.md),
+                  Expanded(
+                    child: VSInputField(
+                      label: 'Optional Field',
+                      hintText: 'This field is optional',
+                      isOptional: true,
+                    ),
+                  ),
+                ],
               ),
-            ),
-            SizedBox(width: AppSpacing.md),
-            Expanded(
-              child: VSInputField(
-                label: 'Hidden Label',
-                hintText: 'Field with hidden label',
-                showLabel: false,
+              SizedBox(height: AppSpacing.md),
+
+              Row(
+                children: [
+                  Expanded(
+                    child: VSInputField(
+                      label: 'Disabled Field',
+                      hintText: 'Cannot edit this',
+                      initialValue: 'Disabled content',
+                      isEnabled: false,
+                    ),
+                  ),
+                  SizedBox(width: AppSpacing.md),
+                  Expanded(
+                    child: VSInputField(
+                      label: 'Read-only Field',
+                      hintText: 'Cannot edit this',
+                      initialValue: 'Read-only content',
+                      isReadOnly: true,
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
+              SizedBox(height: AppSpacing.md),
+
+              VSInputField(
+                label: 'Field with Error',
+                hintText: 'This field has an error',
+                errorText: 'This is an error message',
+              ),
+            ],
+          ),
         ),
         SizedBox(height: AppSpacing.lg),
 
-        // Autofocus
-        Text(
-          'Autofocus Field',
-          style: AppTypography.bodyMediumSemibold,
-        ),
-        SizedBox(height: AppSpacing.sm),
-        VSInputField(
-          label: 'Auto-focus Field',
-          hintText: 'This field will auto-focus when the page loads',
-          autofocus: true,
-        ),
-        SizedBox(height: AppSpacing.lg),
-
-        // Suffix Text and Icon
-        Text(
-          'Suffix Text and Icon',
-          style: AppTypography.bodyMediumSemibold,
-        ),
-        SizedBox(height: AppSpacing.sm),
-        Row(
-          children: [
-            Expanded(
-              child: VSInputField(
-                label: 'With Suffix Text',
-                hintText: 'Field with suffix text',
-                suffixText: 'kg',
+        // Custom Styling
+        _buildSection(
+          title: 'Custom Styling',
+          description: 'Fields with custom appearance and behavior',
+          child: Column(
+            children: [
+              VSInputField(
+                label: 'Custom Height',
+                hintText: 'Field with custom height',
+                height: 60,
+                fillColor: AppColors.primaryBg.withValues(alpha: 0.1),
               ),
-            ),
-            SizedBox(width: AppSpacing.md),
-            Expanded(
-              child: VSInputField(
-                label: 'With Suffix Icon',
-                hintText: 'Field with suffix icon',
+              SizedBox(height: AppSpacing.md),
+
+              Row(
+                children: [
+                  Expanded(
+                    child: VSInputField(
+                      label: 'Center Aligned',
+                      hintText: 'Center text',
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  SizedBox(width: AppSpacing.md),
+                  Expanded(
+                    child: VSInputField(
+                      label: 'Right Aligned',
+                      hintText: 'Right text',
+                      textAlign: TextAlign.right,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: AppSpacing.md),
+
+              VSInputField(
+                label: 'With Prefix & Suffix',
+                hintText: 'Field with icons',
+                prefix: '🔍',
+                suffixText: 'Search',
                 suffixIcon: Icon(
                   Icons.search,
                   size: 16,
                   color: AppColors.neutral500,
                 ),
               ),
-            ),
-          ],
-        ),
-        SizedBox(height: AppSpacing.lg),
-
-        // Custom Styling
-        Text(
-          'Custom Styling',
-          style: AppTypography.bodyMediumSemibold,
-        ),
-        SizedBox(height: AppSpacing.sm),
-        Column(
-          children: [
-            VSInputField(
-              label: 'Custom Height',
-              hintText: 'Field with custom height',
-              height: 48,
-              fillColor: AppColors.primaryBg.withValues(alpha: 0.1),
-            ),
-            SizedBox(height: AppSpacing.md),
-            VSInputField(
-              label: 'Center Aligned Text',
-              hintText: 'Center aligned text',
-              textAlign: TextAlign.center,
-              fillColor: AppColors.secondaryBg.withValues(alpha: 0.1),
-            ),
-            SizedBox(height: AppSpacing.md),
-            VSInputField(
-              label: 'Custom Padding',
-              hintText: 'Field with custom padding',
-              padding: EdgeInsets.all(AppSpacing.lg),
-              contentPadding: EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.md),
-              fillColor: AppColors.successBg.withValues(alpha: 0.1),
-            ),
-          ],
-        ),
-        SizedBox(height: AppSpacing.lg),
-
-        // Min Lines for Textarea
-        Text(
-          'Textarea with Min Lines',
-          style: AppTypography.bodyMediumSemibold,
-        ),
-        SizedBox(height: AppSpacing.sm),
-        VSInputField(
-          label: 'Multi-line Text',
-          hintText: 'This textarea has minimum 3 lines',
-          type: VSInputFieldType.textarea,
-          minLines: 3,
-          maxLines: 6,
-        ),
-        SizedBox(height: AppSpacing.lg),
-
-        // Form Actions
-        Text(
-          'Form Actions',
-          style: AppTypography.bodyLargeSemibold.copyWith(
-            color: AppColors.textSecondary,
-          ),
-        ),
-        SizedBox(height: AppSpacing.md),
-
-        Row(
-          children: [
-            Expanded(
-              child: VSButton(
-                label: 'Submit Form',
-                onPressed: _submitForm,
-                variant: VSButtonVariant.primary,
-              ),
-            ),
-            SizedBox(width: AppSpacing.md),
-            Expanded(
-              child: VSButton(
-                label: 'Clear Form',
-                onPressed: _clearForm,
-                variant: VSButtonVariant.secondary,
-              ),
-            ),
-          ],
-        ),
-        SizedBox(height: AppSpacing.lg),
-
-        // Field States Demo
-        Text(
-          'Field States & Validation',
-          style: AppTypography.bodyLargeSemibold.copyWith(
-            color: AppColors.textSecondary,
-          ),
-        ),
-        SizedBox(height: AppSpacing.md),
-
-        Container(
-          padding: EdgeInsets.all(AppSpacing.md),
-          decoration: BoxDecoration(
-            color: AppColors.neutral100,
-            borderRadius: BorderRadius.circular(4),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'This section demonstrates different field states and validation features:',
-                style: AppTypography.bodyMediumRegular,
-              ),
-              SizedBox(height: AppSpacing.sm),
-              VSBadge(
-                label: 'Required fields with * indicator',
-                variant: VSBadgeVariant.primary,
-              ),
-              SizedBox(height: AppSpacing.xs),
-              VSBadge(
-                label: 'Optional fields with (Optional) text',
-                variant: VSBadgeVariant.secondary,
-              ),
-              SizedBox(height: AppSpacing.xs),
-              VSBadge(
-                label: 'Real-time validation',
-                variant: VSBadgeVariant.success,
-              ),
-              SizedBox(height: AppSpacing.xs),
-              VSBadge(
-                label: 'Character counters for limited fields',
-                variant: VSBadgeVariant.warning,
-              ),
-              SizedBox(height: AppSpacing.xs),
-              VSBadge(
-                label: 'Custom validation functions',
-                variant: VSBadgeVariant.danger,
-              ),
             ],
+          ),
+        ),
+        SizedBox(height: AppSpacing.lg),
+
+        // Loading States
+        _buildSection(
+          title: 'Loading States',
+          description: 'Fields with loading indicators and interactive loading',
+          child: Column(
+            children: [
+              VSInputField(
+                label: 'Loading Field',
+                hintText: 'This field is loading',
+                isLoading: true,
+              ),
+              SizedBox(height: AppSpacing.md),
+
+              VSInputField(
+                label: 'Interactive Loading with Dropdown',
+                hintText: 'Click to load data',
+                controller: _dropdownController,
+                isLoadingData: _isInteractiveLoading,
+                dropdownOptions: _dropdownOptions,
+                focusNode: _dropdownFocusNode,
+                onDropdownSelected: (value) {
+                  setState(() {
+                    _selectedDropdownValue = value;
+                  });
+                },
+                onClear: () {
+                  _dropdownController.clear();
+                  setState(() {
+                    _selectedDropdownValue = null;
+                  });
+                  VSToastService.showToast(
+                    context,
+                    title: 'Cleared',
+                    description: 'Selection has been cleared',
+                    type: VSToastType.info,
+                  );
+                },
+              ),
+              if (_selectedDropdownValue != null)
+                Padding(
+                  padding: EdgeInsets.only(top: AppSpacing.sm),
+                  child: Text(
+                    'Selected: $_selectedDropdownValue',
+                    style: AppTypography.bodySmallRegular.copyWith(
+                      color: AppColors.primaryDefault,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+        SizedBox(height: AppSpacing.lg),
+
+        // Clear Functionality
+        _buildSection(
+          title: 'Clear Functionality',
+          description: 'Fields with clear buttons',
+          child: VSInputField(
+            label: 'Clearable Field',
+            hintText: 'Type something and click the X to clear',
+            controller: _clearController,
+            onClear: () {
+              _clearController.text = '';
+              VSToastService.showToast(
+                context,
+                title: 'Cleared',
+                description: 'Field has been cleared',
+                type: VSToastType.info,
+              );
+            },
           ),
         ),
       ],
     );
   }
 
-  // Form data controllers
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _priceController = TextEditingController();
-  final TextEditingController _percentageController = TextEditingController();
-  final TextEditingController _notesController = TextEditingController();
-
-  // Form validation states
-  String? _nameError;
-  String? _emailError;
-  String? _phoneError;
-  String? _priceError;
-  String? _percentageError;
-
-  void _validateName(String value) {
-    setState(() {
-      if (value.isEmpty) {
-        _nameError = 'Name is required';
-      } else if (value.length < 2) {
-        _nameError = 'Name must be at least 2 characters';
-      } else {
-        _nameError = null;
-      }
-    });
-  }
-
-  void _validateEmail(String value) {
-    setState(() {
-      if (value.isEmpty) {
-        _emailError = 'Email is required';
-      } else {
-        final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-        if (!emailRegex.hasMatch(value)) {
-          _emailError = 'Please enter a valid email address';
-        } else {
-          _emailError = null;
-        }
-      }
-    });
-  }
-
-  void _validatePhone(String value) {
-    setState(() {
-      if (value.isEmpty) {
-        _phoneError = null; // Optional field
-      } else {
-        final digitsOnly = value.replaceAll(RegExp(r'[^\d]'), '');
-        if (digitsOnly.length < 8) {
-          _phoneError = 'Phone number must be at least 8 digits';
-        } else if (digitsOnly.length > 15) {
-          _phoneError = 'Phone number must not exceed 15 digits';
-        } else {
-          _phoneError = null;
-        }
-      }
-    });
-  }
-
-  void _validatePrice(String value) {
-    setState(() {
-      if (value.isEmpty) {
-        _priceError = 'Price is required';
-      } else {
-        final cleanValue = value.replaceAll(',', '');
-        if (double.tryParse(cleanValue) == null) {
-          _priceError = 'Please enter a valid price';
-        } else {
-          _priceError = null;
-        }
-      }
-    });
-  }
-
-  void _validatePercentage(String value) {
-    setState(() {
-      if (value.isEmpty) {
-        _percentageError = null; // Optional field
-      } else {
-        final number = double.tryParse(value);
-        if (number == null) {
-          _percentageError = 'Please enter a valid percentage';
-        } else if (number < 0 || number > 100) {
-          _percentageError = 'Percentage must be between 0 and 100';
-        } else {
-          _percentageError = null;
-        }
-      }
-    });
-  }
-
-  void _submitForm() {
-    // Validate all fields
-    _validateName(_nameController.text);
-    _validateEmail(_emailController.text);
-    _validatePhone(_phoneController.text);
-    _validatePrice(_priceController.text);
-    _validatePercentage(_percentageController.text);
-
-    // Check if all validations pass
-    if (_nameError == null &&
-        _emailError == null &&
-        _phoneError == null &&
-        _priceError == null &&
-        _percentageError == null) {
-      // Show success dialog
-      showDialog(
-        context: context,
-        builder: (context) => VSDialog(
-          type: VSDialogType.approve,
-          message:
-              'Form submitted successfully!\n\nName: ${_nameController.text}\nEmail: ${_emailController.text}\nPhone: ${_phoneController.text}\nPrice: ${_priceController.text}\nNotes: ${_notesController.text}',
-          actions: [
-            VSDialogAction(
-              label: 'OK',
-              onPressed: () {},
-            ),
-          ],
-        ),
-      );
-    } else {
-      // Show error dialog
-      showDialog(
-        context: context,
-        builder: (context) => VSDialog(
-          type: VSDialogType.reject,
-          message: 'Please fix the errors in the form before submitting.',
-          actions: [
-            VSDialogAction(
-              label: 'OK',
-              onPressed: () {},
-            ),
-          ],
-        ),
-      );
-    }
-  }
-
-  void _clearForm() {
-    setState(() {
-      _nameController.clear();
-      _emailController.clear();
-      _phoneController.clear();
-      _priceController.clear();
-      _percentageController.clear();
-      _notesController.clear();
-      _nameError = null;
-      _emailError = null;
-      _phoneError = null;
-      _priceError = null;
-      _percentageError = null;
-    });
-  }
-
   @override
   void dispose() {
-    _nameController.dispose();
-    _emailController.dispose();
-    _phoneController.dispose();
-    _priceController.dispose();
-    _percentageController.dispose();
-    _notesController.dispose();
+    _clearController.dispose();
+    _dropdownFocusNode.dispose();
+    _dropdownController.dispose();
     super.dispose();
   }
 

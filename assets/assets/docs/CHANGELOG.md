@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.0.1] - 2025-12-14
+
+### 🐛 Bug Fixes
+- **VSFilter**: Fixed date range picker popup centering and width issues
+- **VSFilter**: Updated default date ranges to prevent invalid date selections
+- **VSIcon Example**: Fixed tab navigation - second tab content was incorrectly placed in first tab
+- **VSIcon Example**: Made images full width in the Images tab
+- **VSApproval Example**: Added Created Date filter example using VSDateRangeFilterMenuItem
+
+### 🔧 Enhancements
+- **VSFilter**: Improved horizontal centering of calendar widgets in date pickers
+- **VSIcon Example**: Optimized image display and layout in documentation
+
+### 📚 Documentation
+- Updated version to 1.0.1 across all documentation files
+- Added changelog entry for recent fixes and improvements
+
+---
+
 ## [1.0.0] - 2025-12-08
 
 ### 🎉 **Stable Release - Complete Design System**

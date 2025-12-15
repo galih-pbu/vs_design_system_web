@@ -1,5 +1,7 @@
 # VS Toggle Implementation
 
+**Version 1.0.1 - December 14, 2025**
+
 ## Overview
 
 The VS Toggle component provides binary choice controls for settings and preferences with VS Design System styling. It offers a clean, accessible toggle switch that allows users to enable or disable features and options.

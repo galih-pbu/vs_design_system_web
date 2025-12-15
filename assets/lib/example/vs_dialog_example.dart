@@ -697,7 +697,7 @@ class _VSDialogExampleState extends State<VSDialogExample> {
 
   void _showSimpleLoadingDialog(BuildContext context) {
     VSDialog.showLoadingDialog(context, _loadingKey);
-    Future.delayed(const Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: 2), () {
       if (mounted) {
         Navigator.of(context).pop();
         _showActionDialog(context, 'Loading completed!');

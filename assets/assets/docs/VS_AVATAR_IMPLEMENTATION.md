@@ -1,5 +1,7 @@
 # VS Avatar
 
+**Version 1.0.1 - December 14, 2025**
+
 The VS Avatar component provides circular user profile images with support for images, initials, status indicators, and online presence.
 
 ## Overview

@@ -603,7 +603,12 @@ class _VSChipExampleState extends State<VSChipExample> {
                         label: filter,
                         onPressed: () {
                           setState(() => _selectedFilters.add(filter));
-                          Navigator.of(context).pop();
+                          VSToastService.showToast(
+                            context,
+                            title: 'Filter Added',
+                            description: '$filter filter has been added',
+                            type: VSToastType.success,
+                          );
                         },
                         size: VSButtonSize.small,
                         variant: VSButtonVariant.outlined,

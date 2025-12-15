@@ -1,5 +1,7 @@
 # VS Toast Implementation
 
+**Version 1.0.1 - December 14, 2025**
+
 ## Overview
 
 The VS Toast component provides non-intrusive notifications for user feedback with VS Design System styling. It offers temporary, auto-dismissing messages that appear as overlays to inform users about actions, errors, or system status without interrupting their workflow.

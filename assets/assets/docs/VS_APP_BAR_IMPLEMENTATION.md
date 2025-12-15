@@ -1,5 +1,7 @@
 # VS App Bar
 
+**Version 1.0.1 - December 14, 2025**
+
 The VS App Bar component provides consistent top navigation bars with customizable content, actions, and styling for different screen contexts.
 
 ## Overview

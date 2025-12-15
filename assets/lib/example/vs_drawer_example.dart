@@ -30,7 +30,7 @@ class _VSDrawerExampleState extends State<VSDrawerExample> {
           children: [
             _buildSection(
               title: 'VS Drawer Variants & Types',
-              description: 'Comprehensive demonstration of drawer configurations, items, and interactive examples',
+              description: 'Comprehensive demonstration of drawer configurations organized by functionality: basic configurations, item types, actions, advanced features, and real-world usage patterns',
               child: _buildDrawerShowcase(),
             ),
           ],
@@ -88,9 +88,35 @@ class _VSDrawerExampleState extends State<VSDrawerExample> {
                   onPressed: () => _showDrawerWithInfo(context),
                   variant: VSButtonVariant.secondary,
                 ),
+              ],
+            ),
+          ],
+        ),
+
+        SizedBox(height: AppSpacing.lg),
+
+        // Custom Width Drawers
+        _buildDrawerGroup(
+          title: 'Custom Width Drawers',
+          description: 'Drawers with custom width configurations',
+          children: [
+            Wrap(
+              spacing: AppSpacing.md,
+              runSpacing: AppSpacing.sm,
+              children: [
                 VSButton(size: VSButtonSize.small,
-                  label: 'End Drawer',
-                  onPressed: () => _showEndDrawer(),
+                  label: 'Narrow Drawer (300px)',
+                  onPressed: () => _showNarrowDrawer(context),
+                  variant: VSButtonVariant.primary,
+                ),
+                VSButton(size: VSButtonSize.small,
+                  label: 'Wide Drawer (600px)',
+                  onPressed: () => _showWideDrawer(context),
+                  variant: VSButtonVariant.secondary,
+                ),
+                VSButton(size: VSButtonSize.small,
+                  label: 'Extra Wide (800px)',
+                  onPressed: () => _showExtraWideDrawer(context),
                   variant: VSButtonVariant.outlined,
                 ),
               ],
@@ -148,6 +174,37 @@ class _VSDrawerExampleState extends State<VSDrawerExample> {
                 VSButton(size: VSButtonSize.small,
                   label: 'No Actions',
                   onPressed: () => _showNoActionsDrawer(context),
+                ),
+              ],
+            ),
+          ],
+        ),
+
+        SizedBox(height: AppSpacing.lg),
+
+        // Advanced Drawer Features
+        _buildDrawerGroup(
+          title: 'Advanced Drawer Features',
+          description: 'Specialized drawer configurations and advanced features',
+          children: [
+            Wrap(
+              spacing: AppSpacing.md,
+              runSpacing: AppSpacing.sm,
+              children: [
+                VSButton(size: VSButtonSize.small,
+                  label: 'Filter Drawer',
+                  onPressed: () => _showFilterDrawer(context),
+                  variant: VSButtonVariant.primary,
+                ),
+                VSButton(size: VSButtonSize.small,
+                  label: 'Settings Drawer',
+                  onPressed: () => _showSettingsDrawer(context),
+                  variant: VSButtonVariant.secondary,
+                ),
+                VSButton(size: VSButtonSize.small,
+                  label: 'Confirmation Drawer',
+                  onPressed: () => _showConfirmationDrawer(context),
+                  variant: VSButtonVariant.outlined,
                 ),
               ],
             ),
@@ -508,34 +565,156 @@ class _VSDrawerExampleState extends State<VSDrawerExample> {
     );
   }
 
-  void _showEndDrawer() {
+  void _showNarrowDrawer(BuildContext context) {
     VSDrawer.show(
       context,
-      title: 'End Drawer Example',
+      title: 'Narrow Drawer (300px)',
+      width: 300.0,
       items: [
         VSDrawerItem(
-          label: 'Search Query',
-          hint: 'Enter search terms',
+          label: 'Quick Setting',
+          hint: 'Enter value',
         ),
         VSDrawerItem(
-          label: 'Date Range',
-          hint: 'Select date range',
-        ),
-        VSDrawerItem(
-          label: 'Sort By',
+          label: 'Status',
           type: VSDrawerItemType.dropdown,
-          options: ['Name', 'Date', 'Priority', 'Status'],
+          options: ['Active', 'Inactive', 'Pending'],
         ),
       ],
       actions: [
         VSButton(size: VSButtonSize.small,
-          label: 'Clear Filters',
-          onPressed: () => _showActionDialog(context, 'Filters cleared!'),
+          label: 'Cancel',
+          onPressed: () {},
           variant: VSButtonVariant.outlined,
         ),
         VSButton(size: VSButtonSize.small,
-          label: 'Apply Filters',
-          onPressed: () => _showActionDialog(context, 'Filters applied successfully!'),
+          label: 'Save',
+          onPressed: () => _showActionDialog(context, 'Narrow drawer settings saved!'),
+        ),
+      ],
+    );
+  }
+
+  void _showWideDrawer(BuildContext context) {
+    VSDrawer.show(
+      context,
+      title: 'Wide Drawer (600px)',
+      width: 600.0,
+      items: [
+        VSDrawerItem(
+          label: 'Full Name',
+          hint: 'Enter your full name',
+        ),
+        VSDrawerItem(
+          label: 'Email Address',
+          hint: 'Enter your email address',
+        ),
+        VSDrawerItem(
+          label: 'Phone Number',
+          hint: 'Enter your phone number',
+        ),
+        VSDrawerItem(
+          label: 'Address',
+          hint: 'Enter your full address',
+        ),
+        VSDrawerItem(
+          label: 'Department',
+          type: VSDrawerItemType.dropdown,
+          options: ['Engineering', 'Marketing', 'Sales', 'HR', 'Finance'],
+        ),
+        VSDrawerItem(
+          label: 'Role',
+          type: VSDrawerItemType.dropdown,
+          options: ['Manager', 'Senior', 'Junior', 'Intern'],
+        ),
+        VSDrawerItem(
+          label: 'Bio',
+          hint: 'Tell us about yourself',
+        ),
+      ],
+      actions: [
+        VSButton(size: VSButtonSize.small,
+          label: 'Cancel',
+          onPressed: () {},
+          variant: VSButtonVariant.outlined,
+        ),
+        VSButton(size: VSButtonSize.small,
+          label: 'Save Profile',
+          onPressed: () => _showActionDialog(context, 'Wide drawer profile saved!'),
+        ),
+      ],
+    );
+  }
+
+  void _showExtraWideDrawer(BuildContext context) {
+    VSDrawer.show(
+      context,
+      title: 'Extra Wide Drawer (800px)',
+      width: 800.0,
+      showInfoBar: true,
+      infoMessage: 'This extra wide drawer provides ample space for complex forms and configurations.',
+      infoBgColor: AppColors.primaryBg,
+      infoTextColor: AppColors.primaryDefault,
+      items: [
+        VSDrawerItem(
+          label: 'Project Title',
+          hint: 'Enter comprehensive project title',
+        ),
+        VSDrawerItem(
+          label: 'Project Description',
+          hint: 'Provide detailed project description',
+        ),
+        VSDrawerItem(
+          label: 'Project Type',
+          type: VSDrawerItemType.dropdown,
+          options: ['Web Application', 'Mobile App', 'Desktop App', 'API', 'Microservice'],
+        ),
+        VSDrawerItem(
+          label: 'Technology Stack',
+          hint: 'List all technologies used',
+        ),
+        VSDrawerItem(
+          label: 'Team Size',
+          type: VSDrawerItemType.dropdown,
+          options: ['1-5 members', '6-10 members', '11-20 members', '20+ members'],
+        ),
+        VSDrawerItem(
+          label: 'Budget Range',
+          type: VSDrawerItemType.dropdown,
+          options: ['\$10k-\$50k', '\$50k-\$100k', '\$100k-\$500k', '\$500k+'],
+        ),
+        VSDrawerItem(
+          label: 'Timeline',
+          type: VSDrawerItemType.dropdown,
+          options: ['1-3 months', '3-6 months', '6-12 months', '12+ months'],
+        ),
+        VSDrawerItem(
+          label: 'Repository URL',
+          hint: 'Git repository URL',
+        ),
+        VSDrawerItem(
+          label: 'Documentation URL',
+          hint: 'Project documentation URL',
+        ),
+        VSDrawerItem(
+          label: 'Additional Notes',
+          hint: 'Any additional information or requirements',
+        ),
+      ],
+      actions: [
+        VSButton(size: VSButtonSize.small,
+          label: 'Cancel',
+          onPressed: () {},
+          variant: VSButtonVariant.outlined,
+        ),
+        VSButton(size: VSButtonSize.small,
+          label: 'Save Draft',
+          onPressed: () => _showActionDialog(context, 'Draft saved!'),
+          variant: VSButtonVariant.secondary,
+        ),
+        VSButton(size: VSButtonSize.small,
+          label: 'Create Project',
+          onPressed: () => _showActionDialog(context, 'Extra wide project created!'),
         ),
       ],
     );
@@ -1153,6 +1332,136 @@ class _VSDrawerExampleState extends State<VSDrawerExample> {
         VSButton(size: VSButtonSize.small,
           label: 'Apply Filters',
           onPressed: () => _showActionDialog(context, 'Filters applied successfully!'),
+        ),
+      ],
+    );
+  }
+
+  void _showFilterDrawer(BuildContext context) {
+    VSDrawer.show(
+      context,
+      title: 'Advanced Filters',
+      items: [
+        VSDrawerItem(
+          label: 'Search Query',
+          hint: 'Enter search terms',
+          type: VSDrawerItemType.text,
+        ),
+        VSDrawerItem(
+          label: 'Category',
+          type: VSDrawerItemType.dropdown,
+          options: ['All', 'Electronics', 'Clothing', 'Books', 'Home & Garden'],
+        ),
+        VSDrawerItem(
+          label: 'Price Range',
+          hint: 'Min - Max price',
+          type: VSDrawerItemType.text,
+        ),
+        VSDrawerItem(
+          label: 'Rating',
+          type: VSDrawerItemType.dropdown,
+          options: ['Any', '4+ stars', '3+ stars', '2+ stars', '1+ star'],
+        ),
+        VSDrawerItem(
+          label: 'Availability',
+          type: VSDrawerItemType.dropdown,
+          options: ['Any', 'In Stock', 'Out of Stock', 'Pre-order'],
+        ),
+      ],
+      actions: [
+        VSButton(size: VSButtonSize.small,
+          label: 'Clear All',
+          onPressed: () => _showActionDialog(context, 'All filters cleared!'),
+          variant: VSButtonVariant.outlined,
+        ),
+        VSButton(size: VSButtonSize.small,
+          label: 'Apply Filters',
+          onPressed: () => _showActionDialog(context, 'Filters applied successfully!'),
+        ),
+      ],
+    );
+  }
+
+  void _showSettingsDrawer(BuildContext context) {
+    VSDrawer.show(
+      context,
+      title: 'Application Settings',
+      items: [
+        VSDrawerItem(
+          label: 'Theme',
+          type: VSDrawerItemType.dropdown,
+          options: ['Light', 'Dark', 'System Default'],
+        ),
+        VSDrawerItem(
+          label: 'Language',
+          type: VSDrawerItemType.dropdown,
+          options: ['English', 'Spanish', 'French', 'German', 'Japanese'],
+        ),
+        VSDrawerItem(
+          label: 'Notifications',
+          type: VSDrawerItemType.dropdown,
+          options: ['All', 'Important Only', 'None'],
+        ),
+        VSDrawerItem(
+          label: 'Auto-save',
+          type: VSDrawerItemType.dropdown,
+          options: ['Every 30 seconds', 'Every minute', 'Every 5 minutes', 'Manual only'],
+        ),
+        VSDrawerItem(
+          label: 'Data Sync',
+          type: VSDrawerItemType.dropdown,
+          options: ['WiFi only', 'WiFi & Mobile', 'Manual only'],
+        ),
+      ],
+      actions: [
+        VSButton(size: VSButtonSize.small,
+          label: 'Reset to Default',
+          onPressed: () => _showActionDialog(context, 'Settings reset to default!'),
+          variant: VSButtonVariant.outlined,
+        ),
+        VSButton(size: VSButtonSize.small,
+          label: 'Save Settings',
+          onPressed: () => _showActionDialog(context, 'Settings saved successfully!'),
+        ),
+      ],
+    );
+  }
+
+  void _showConfirmationDrawer(BuildContext context) {
+    VSDrawer.show(
+      context,
+      title: 'Confirm Action',
+      showInfoBar: true,
+      infoMessage: 'This action cannot be undone. Please confirm your decision.',
+      infoBgColor: AppColors.warningBg,
+      infoTextColor: AppColors.warningDefault,
+      items: [
+        VSDrawerItem(
+          label: 'Action Type',
+          type: VSDrawerItemType.dropdown,
+          options: ['Delete Account', 'Reset Data', 'Transfer Ownership', 'Archive Project'],
+        ),
+        VSDrawerItem(
+          label: 'Confirmation Code',
+          hint: 'Enter confirmation code',
+          type: VSDrawerItemType.text,
+        ),
+        VSDrawerItem(
+          label: 'Reason',
+          hint: 'Please provide a reason (optional)',
+          type: VSDrawerItemType.text,
+        ),
+      ],
+      actions: [
+        VSButton(size: VSButtonSize.small,
+          label: 'Cancel',
+          onPressed: () {},
+          variant: VSButtonVariant.outlined,
+        ),
+        VSButton(size: VSButtonSize.small,
+          label: 'Confirm Action',
+          onPressed: () => _showActionDialog(context, 'Action confirmed and executed!'),
+          variant: VSButtonVariant.danger,
         ),
       ],
     );

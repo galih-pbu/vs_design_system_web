@@ -1,5 +1,7 @@
 # VS Tab Implementation
 
+**Version 1.0.1 - December 14, 2025**
+
 ## Overview
 
 The VS Tab component provides organized navigation between different content sections with VS Design System styling. It offers flexible tab configurations including filled and underlined styles, multiple sizes, and support for custom actions.

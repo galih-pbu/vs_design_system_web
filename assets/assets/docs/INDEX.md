@@ -1,10 +1,10 @@
 # 📚 VS Design System - Complete Documentation Index
 
-## 🎉 Welcome to VS Design System v1.0.0
+## 🎉 Welcome to VS Design System v1.0.1
 
 **A comprehensive, enterprise-ready Flutter component library** with 27 production-ready components, centralized design tokens, and extensive documentation.
 
-[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](VERSION.md)
+[![Version](https://img.shields.io/badge/version-1.0.1-blue.svg)](VERSION.md)
 [![Components](https://img.shields.io/badge/components-27+-green.svg)]()
 [![Documentation](https://img.shields.io/badge/docs-100%25-orange.svg)]()
 

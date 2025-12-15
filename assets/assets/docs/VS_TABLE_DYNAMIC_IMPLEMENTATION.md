@@ -1,11 +1,13 @@
 # VS Table Dynamic Implementation
 
+**Version 1.0.1 - December 14, 2025**
+
 ## Overview
 
 The VS Table Dynamic components provide powerful, flexible table implementations for displaying structured data with advanced features like pagination, sticky headers/columns, row selection, and expandable rows. The library includes two main components:
 
-- **VsTableDynamic**: Basic table with standard features
-- **VsTableDynamic2**: Advanced table with sticky column support
+- **VsTableDynamic**: Basic table with standard features (from `vs_table_dynamic.dart`)
+- **VsTableDynamic2**: Advanced table with sticky column support (from `vs_table_dynamic_sticky.dart`)
 
 Both components use a unified `TableData` model for data binding and support extensive customization options for enterprise-grade data display.
 
@@ -305,6 +307,94 @@ class _PaginatedProductTableState extends State<PaginatedProductTable> {
           ColumnData(data: 'Electronics', typeData: TypeData.string),
           ColumnData(data: '\$199.99', typeData: TypeData.string),
           ColumnData(data: '45', typeData: TypeData.string),
+        ]),
+        // Add more rows...
+      ],
+    );
+  }
+}
+```
+
+### Table with Search Functionality
+
+```dart
+class SearchableUserTable extends StatefulWidget {
+  @override
+  State<SearchableUserTable> createState() => _SearchableUserTableState();
+}
+
+class _SearchableUserTableState extends State<SearchableUserTable> {
+  late TableData _tableData;
+  String _searchQuery = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _tableData = _createUserTableData();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        // Search input
+        Padding(
+          padding: EdgeInsets.only(bottom: AppSpacing.md),
+          child: VSInputField(
+            label: 'Search Users',
+            placeholder: 'Search by name, email, or department...',
+            prefixIcon: Icon(Icons.search),
+            onChanged: (value) {
+              setState(() => _searchQuery = value);
+            },
+          ),
+        ),
+
+        // Table
+        Expanded(
+          child: VsTableDynamic(
+            tableData: _tableData,
+            currentPage: 1,
+            pageSize: 10,
+            showPagination: false,
+            searchQuery: _searchQuery,
+            onSearchChanged: (query) {
+              setState(() => _searchQuery = query);
+              // Implement client-side filtering or trigger API search
+              _filterUsers(query);
+            },
+            searchDebounceDuration: Duration(milliseconds: 300),
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _filterUsers(String query) {
+    // Implement filtering logic
+    // This could filter the _tableData.detail list based on the query
+  }
+
+  TableData _createUserTableData() {
+    return TableData(
+      header: [
+        TableHeader(fieldName: 'name', label: 'Name', typeData: TypeData.string, width: 200),
+        TableHeader(fieldName: 'email', label: 'Email', typeData: TypeData.string, width: 250),
+        TableHeader(fieldName: 'department', label: 'Department', typeData: TypeData.string, width: 150),
+        TableHeader(fieldName: 'status', label: 'Status', typeData: TypeData.string, width: 120),
+      ],
+      detail: [
+        RowData(rowData: [
+          ColumnData(data: 'John Doe', typeData: TypeData.string),
+          ColumnData(data: 'john.doe@company.com', typeData: TypeData.string),
+          ColumnData(data: 'Engineering', typeData: TypeData.string),
+          ColumnData(data: 'Active', typeData: TypeData.string),
+        ]),
+        RowData(rowData: [
+          ColumnData(data: 'Jane Smith', typeData: TypeData.string),
+          ColumnData(data: 'jane.smith@company.com', typeData: TypeData.string),
+          ColumnData(data: 'Design', typeData: TypeData.string),
+          ColumnData(data: 'Active', typeData: TypeData.string),
         ]),
         // Add more rows...
       ],
@@ -1077,12 +1167,41 @@ class _FinancialReportsTableState extends State<FinancialReportsTable> {
 | `headerHeight` | `double` | `50` | Height of header row |
 | `showCheckboxColumn` | `bool` | `false` | Show checkbox column for row selection |
 | `initialSelectedRows` | `List<int>?` | `null` | Initially selected row indices |
+| `initialDisableList` | `List<int>?` | `null` | Initially disabled row indices |
 | `checkboxCallback` | `Function(List<int> selectedIndices)?` | `null` | Callback for selection changes |
 | `compact` | `bool` | `false` | Use compact spacing |
 | `showPagination` | `bool` | `true` | Show pagination controls |
 | `showExpandColumn` | `bool` | `false` | Show expand/collapse column |
 | `expandedRowBuilder` | `Widget Function(int index, dynamic rowData)?` | `null` | Builder for expanded row content |
 | `stickyHeader` | `bool` | `false` | Make header sticky during vertical scroll |
+| `searchQuery` | `String?` | `null` | Initial search query |
+| `onSearchChanged` | `Function(String)?` | `null` | Callback when search query changes |
+| `searchDebounceDuration` | `Duration?` | `null` | Debounce duration for search |
+| `searchTriggerOnEnter` | `bool` | `false` | Trigger search only on Enter key |
+| `isMobile` | `bool` | `false` | Mobile-optimized layout |
+| `isEdit` | `bool` | `false` | Enable edit mode |
+| `isReport` | `bool` | `false` | Report mode styling |
+| `edited` | `bool` | `false` | Mark as edited |
+| `isCheckAll` | `bool` | `false` | Enable select all functionality |
+| `sortAscending` | `bool?` | `null` | Sort direction |
+| `sortColumnIndex` | `int?` | `null` | Column index for sorting |
+| `horizontalMargin` | `double?` | `null` | Horizontal margin |
+| `fixedColumnColor` | `Color?` | `null` | Color for fixed columns |
+| `isTableFineForm` | `bool` | `false` | Fine form styling |
+| `isSmallRange` | `bool` | `false` | Small range mode |
+| `rowColorSetting` | `dynamic` | `null` | Row color configuration |
+| `tableWidth` | `double?` | `null` | Table width |
+| `tableBorder` | `dynamic` | `null` | Table border configuration |
+| `scaffoldKey` | `GlobalKey?` | `null` | Scaffold key for navigation |
+| `selectCallback` | `Function?` | `null` | General select callback |
+| `editCallBack` | `Function(int index)?` | `null` | Edit button callback |
+| `switchCallBack` | `Function(bool value, int index)?` | `null` | Switch toggle callback |
+| `viewCallBack` | `Function(int index)?` | `null` | View button callback |
+| `deleteCallback` | `Function(int index)?` | `null` | Delete button callback |
+| `syncCallback` | `Function(int index)?` | `null` | Sync button callback |
+| `emailCallback` | `Function(int index)?` | `null` | Email button callback |
+| `sendCallback` | `Function(int index)?` | `null` | Send button callback |
+| `typeDataWidgetCallback` | `Function(int index, int widgetIndex)?` | `null` | Type data widget callback |
 
 ### VsTableDynamic2 Properties
 
@@ -1101,6 +1220,7 @@ class _FinancialReportsTableState extends State<FinancialReportsTable> {
 | `headerHeight` | `double` | `50` | Height of header row |
 | `showCheckboxColumn` | `bool` | `false` | Show checkbox column for row selection |
 | `initialSelectedRows` | `List<int>?` | `null` | Initially selected row indices |
+| `initialDisableList` | `List<int>?` | `null` | Initially disabled row indices |
 | `checkboxCallback` | `Function(List<int> selectedIndices)?` | `null` | Callback for selection changes |
 | `compact` | `bool` | `false` | Use compact spacing |
 | `showPagination` | `bool` | `true` | Show pagination controls |
@@ -1108,6 +1228,30 @@ class _FinancialReportsTableState extends State<FinancialReportsTable> {
 | `stickyHeader` | `bool` | `false` | Make header sticky during vertical scroll |
 | `showExpandColumn` | `bool` | `false` | Show expand/collapse column |
 | `expandedRowBuilder` | `Widget Function(int index, dynamic rowData)?` | `null` | Builder for expanded row content |
+| `isMobile` | `bool` | `false` | Mobile-optimized layout |
+| `isEdit` | `bool` | `false` | Enable edit mode |
+| `isReport` | `bool` | `false` | Report mode styling |
+| `edited` | `bool` | `false` | Mark as edited |
+| `isCheckAll` | `bool` | `false` | Enable select all functionality |
+| `sortAscending` | `bool?` | `null` | Sort direction |
+| `sortColumnIndex` | `int?` | `null` | Column index for sorting |
+| `horizontalMargin` | `double?` | `null` | Horizontal margin |
+| `fixedColumnColor` | `Color?` | `null` | Color for fixed columns |
+| `isTableFineForm` | `bool` | `false` | Fine form styling |
+| `isSmallRange` | `bool` | `false` | Small range mode |
+| `rowColorSetting` | `dynamic` | `null` | Row color configuration |
+| `tableWidth` | `double?` | `null` | Table width |
+| `tableBorder` | `dynamic` | `null` | Table border configuration |
+| `scaffoldKey` | `GlobalKey?` | `null` | Scaffold key for navigation |
+| `selectCallback` | `Function?` | `null` | General select callback |
+| `editCallBack` | `Function(int index)?` | `null` | Edit button callback |
+| `switchCallBack` | `Function(bool value, int index)?` | `null` | Switch toggle callback |
+| `viewCallBack` | `Function(int index)?` | `null` | View button callback |
+| `deleteCallback` | `Function(int index)?` | `null` | Delete button callback |
+| `syncCallback` | `Function(int index)?` | `null` | Sync button callback |
+| `emailCallback` | `Function(int index)?` | `null` | Email button callback |
+| `sendCallback` | `Function(int index)?` | `null` | Send button callback |
+| `typeDataWidgetCallback` | `Function(int index, int widgetIndex)?` | `null` | Type data widget callback |
 
 ## Best Practices
 

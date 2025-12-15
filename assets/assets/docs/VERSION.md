@@ -1,8 +1,8 @@
 # VS Design System - Version History
 
-## Current Version: 1.0.0
+## Current Version: 1.0.1
 
-**Release Date:** December 8, 2025
+**Release Date:** December 14, 2025
 
 **Status:** Stable Release ✅
 

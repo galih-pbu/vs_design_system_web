@@ -1,5 +1,7 @@
 # VS Link Implementation
 
+**Version 1.0.1 - December 14, 2025**
+
 ## Overview
 
 The VS Link component provides clickable text elements that follow the VS Design System styling and interaction patterns. It offers consistent underline styling, primary color theming, and proper accessibility support for navigation and actions.

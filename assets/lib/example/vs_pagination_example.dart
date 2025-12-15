@@ -282,7 +282,7 @@ class _VSPaginationExampleState extends State<VSPaginationExample> {
                           ),
                         ),
                         Expanded(
-                          flex: 2,
+                          flex: 1,
                           child: Text(
                             'Price',
                             style: AppTypography.bodySmallSemibold,
@@ -324,15 +324,18 @@ class _VSPaginationExampleState extends State<VSPaginationExample> {
                           ),
                         ),
                         Expanded(
-                          flex: 2,
-                          child: VSChip(
-                            label: item['category'],
-                            type: VSChipType.color,
-                            variant: VSChipVariant.primary,
+                          flex: 1,
+                          child: Container(
+                            alignment: Alignment.centerLeft,
+                            child: VSChip(
+                              label: item['category'],
+                              type: VSChipType.color,
+                              variant: VSChipVariant.primary,
+                            ),
                           ),
                         ),
                         Expanded(
-                          flex: 2,
+                          flex: 1,
                           child: Text(
                             '\$${item['price'].toStringAsFixed(2)}',
                             style: AppTypography.bodySmallRegular,
@@ -340,14 +343,17 @@ class _VSPaginationExampleState extends State<VSPaginationExample> {
                         ),
                         Expanded(
                           flex: 1,
-                          child: VSChip(
-                            label: item['status'],
-                            type: VSChipType.color,
-                            variant: item['status'] == 'Active'
-                                ? VSChipVariant.success
-                                : item['status'] == 'Pending'
-                                    ? VSChipVariant.warning
-                                    : VSChipVariant.neutral,
+                          child: Container(
+                            alignment: Alignment.centerLeft,
+                            child: VSChip(
+                              label: item['status'],
+                              type: VSChipType.color,
+                              variant: item['status'] == 'Active'
+                                  ? VSChipVariant.success
+                                  : item['status'] == 'Pending'
+                                      ? VSChipVariant.warning
+                                      : VSChipVariant.neutral,
+                            ),
                           ),
                         ),
                       ],

@@ -1,5 +1,7 @@
 # VS Tooltip
 
+**Version 1.0.1 - December 14, 2025**
+
 The VS Tooltip component provides contextual help and information overlays that appear on hover or focus, with customizable positioning and styling.
 
 ## Overview

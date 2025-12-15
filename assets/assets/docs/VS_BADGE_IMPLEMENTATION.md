@@ -1,5 +1,7 @@
 # VS Badge
 
+**Version 1.0.1 - December 14, 2025**
+
 The VS Badge component provides flexible status indicators and labels with multiple variants and types for different use cases.
 
 ## Overview

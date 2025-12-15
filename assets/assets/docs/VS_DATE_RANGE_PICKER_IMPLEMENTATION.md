@@ -1,5 +1,7 @@
 # VS Date Range Picker
 
+**Version 1.0.1 - December 14, 2025**
+
 The VS Date Range Picker component provides an input field interface for selecting date ranges with comprehensive customization options and VS Design System integration.
 
 ## Overview

@@ -1,5 +1,7 @@
 # VS Circular Percent Indicator
 
+**Version 1.0.1 - December 14, 2025**
+
 The VS Circular Percent Indicator component provides animated circular progress indicators with customizable styling and content.
 
 ## Overview

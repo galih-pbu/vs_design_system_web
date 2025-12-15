@@ -1,5 +1,7 @@
 # VS Info Bar Implementation
 
+**Version 1.0.1 - December 14, 2025**
+
 ## Overview
 
 The VS Info Bar component provides contextual feedback and notifications to users with different semantic types and interactive actions. It supports both inline notifications and floating bars for bulk operations.

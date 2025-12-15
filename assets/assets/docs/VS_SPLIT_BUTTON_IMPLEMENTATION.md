@@ -1,5 +1,7 @@
 # VS Split Button Implementation
 
+**Version 1.0.1 - December 14, 2025**
+
 ## Overview
 
 The VS Split Button component combines a primary action button with a dropdown menu for related actions. It provides a compact way to present a main action while offering additional related options through a dropdown menu.

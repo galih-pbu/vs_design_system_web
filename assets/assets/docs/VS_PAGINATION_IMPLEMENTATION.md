@@ -1,5 +1,7 @@
 # VS Pagination Implementation
 
+**Version 1.0.1 - December 14, 2025**
+
 ## Overview
 
 The VS Pagination component provides navigation controls for paged content with item count display and customizable items per page options. It displays page navigation buttons, current page indicators, and allows users to change the number of items shown per page.
@@ -10,10 +12,10 @@ The VS Pagination component provides navigation controls for paged content with 
 - **Page Numbers**: Clickable page number buttons with smart ellipsis for large page counts
 - **Item Count Display**: Shows current range and total items (e.g., "Item 1 to 15 of 1,250 items")
 - **Items Per Page Selector**: Dropdown to change items per page with customizable options
+- **Smart Ellipsis**: Automatically shows ellipsis (...) for large numbers of pages to maintain clean UI
 - **Responsive Design**: Adapts to different screen sizes with proper spacing
 - **VS Design System Integration**: Consistent colors, typography, and spacing
 - **Accessibility**: Keyboard navigation support and proper semantic structure
-- **Smart Page Display**: Automatically handles ellipsis for large numbers of pages
 
 ## Basic Usage
 
@@ -78,7 +80,7 @@ class _ProductListPageState extends State<ProductListPage> {
 VSPagination(
   currentPage: 1,
   totalItems: 150,
-  itemsPerPage: 10,
+  itemsPerPage: 15, // Default value
   onPageChanged: (page) => print('Page changed to: $page'),
 )
 ```
@@ -112,7 +114,39 @@ VSPagination(
 )
 ```
 
-## Advanced Examples
+### Smart Ellipsis Behavior
+
+The pagination component intelligently handles large page counts by showing ellipsis (...) to maintain a clean interface:
+
+- **Small Page Counts**: Shows all page numbers when total pages ≤ 7
+- **Large Page Counts**: Shows ellipsis strategically:
+  - Always shows first and last page numbers
+  - Shows current page and adjacent pages
+  - Uses ellipsis to skip ranges in the middle
+
+```dart
+// Example: 15 total pages, current page 8
+// Shows: 1 ... 6 7 8 9 10 ... 15
+
+VSPagination(
+  currentPage: 8,
+  totalItems: 1500, // 100 items per page = 15 pages
+  itemsPerPage: 100,
+  onPageChanged: (page) => print('Page: $page'),
+)
+```
+
+### Custom Height
+
+```dart
+VSPagination(
+  currentPage: _currentPage,
+  totalItems: _totalItems,
+  itemsPerPage: _itemsPerPage,
+  height: 48, // Custom height for larger touch targets
+  onPageChanged: (page) => setState(() => _currentPage = page),
+)
+```
 
 ### Data Table with Pagination
 

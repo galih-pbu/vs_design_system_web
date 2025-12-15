@@ -1,5 +1,7 @@
 # VS Dotted Border
 
+**Version 1.0.1 - December 14, 2025**
+
 The VS Dotted Border component provides flexible dotted and dashed border styling around any widget with support for animations, gradients, and various border shapes.
 
 ## Overview

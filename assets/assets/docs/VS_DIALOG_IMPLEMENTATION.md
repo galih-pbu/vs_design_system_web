@@ -1,5 +1,7 @@
 # VS Dialog
 
+**Version 1.0.1 - December 14, 2025**
+
 The VS Dialog component provides modal dialogs for user interactions, confirmations, and information display with multiple variants and customization options.
 
 ## Overview

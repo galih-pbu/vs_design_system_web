@@ -1,5 +1,7 @@
 # VS Icon Implementation
 
+**Version 1.0.1 - December 14, 2025**
+
 ## Overview
 
 The VS Icon component provides a comprehensive icon system with over 1000 icons organized into logical categories. It supports custom sizing, coloring, and seamless integration with the VS Design System.

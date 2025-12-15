@@ -1,5 +1,7 @@
 # VS Dropdown Implementation
 
+**Version 1.0.1 - December 14, 2025**
+
 ## Overview
 
 The VS Dropdown component provides flexible selection interfaces with VS Design System styling. It supports both basic dropdowns with static lists and advanced autocomplete dropdowns with search and lazy loading capabilities.

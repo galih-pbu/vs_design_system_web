@@ -1,5 +1,7 @@
 # VS Chip
 
+**Version 1.0.1 - December 14, 2025**
+
 The VS Chip component provides compact, interactive elements for displaying status indicators, tags, filters, and approval states with consistent design tokens and multiple variants.
 
 ## Overview
