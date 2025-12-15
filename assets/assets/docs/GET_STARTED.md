@@ -76,17 +76,8 @@ dependencies:
     sdk: flutter
   vs_design_system:
     git:
-      url: https://github.com/your-org/vs_design_system.git
+      url: https://sedayugroup@dev.azure.com/sedayugroup/Flutter/_git/vs_design_system
       ref: main  # or specific tag/commit
-```
-
-### Option 3: Published Package (Future)
-
-Once published to pub.dev:
-
-```yaml
-dependencies:
-  vs_design_system: ^1.0.0
 ```
 
 ---
