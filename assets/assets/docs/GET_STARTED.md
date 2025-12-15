@@ -10,7 +10,8 @@
 ```yaml
 dependencies:
   vs_design_system:
-    path: ../vs_design_system
+    git:
+      url: https://sedayugroup@dev.azure.com/sedayugroup/Flutter/_git/vs_design_system
 ```
 
 ### Step 2: Import
@@ -43,42 +44,6 @@ Before getting started, ensure you have:
 - **iOS**: 12.0+
 - **Android**: API 21+ (Android 5.0+)
 - **Web**: Modern browsers with WebAssembly support
-
----
-
-## 📦 Installation
-
-### Option 1: Local Path Dependency (Recommended for Development)
-
-Perfect for development and testing changes locally.
-
-```yaml
-# pubspec.yaml
-dependencies:
-  flutter:
-    sdk: flutter
-  vs_design_system:
-    path: ../vs_design_system  # Adjust path as needed
-```
-
-```bash
-flutter pub get
-```
-
-### Option 2: Git Dependency
-
-For team collaboration with version control.
-
-```yaml
-# pubspec.yaml
-dependencies:
-  flutter:
-    sdk: flutter
-  vs_design_system:
-    git:
-      url: https://sedayugroup@dev.azure.com/sedayugroup/Flutter/_git/vs_design_system
-      ref: main  # or specific tag/commit
-```
 
 ---
 
@@ -895,7 +860,8 @@ Scaffold(
 **Solution**: Ensure the path in `pubspec.yaml` is correct:
 ```yaml
 vs_design_system:
-  path: ../vs_design_system  # Adjust this path
+    git:
+      url: https://sedayugroup@dev.azure.com/sedayugroup/Flutter/_git/vs_design_system
 ```
 
 ### Issue: "Theme not applying"
