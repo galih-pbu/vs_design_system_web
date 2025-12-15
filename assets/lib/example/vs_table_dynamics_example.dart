@@ -78,6 +78,37 @@ class _TableDynamicsExampleState extends State<TableDynamicsExample> {
     );
   }
 
+  void _showRowDetailDrawer(int index) {
+    final tableData = _createSimpleTableData();
+    if (tableData.detail == null || index >= tableData.detail!.length) return;
+
+    final rowData = tableData.detail![index];
+
+    final items = <VSDrawerItem>[];
+    for (int i = 0; i < rowData.rowData.length; i++) {
+      final cell = rowData.rowData[i];
+      final header = tableData.header[i];
+      items.add(VSDrawerItem(
+        label: header.label,
+        hint: cell.data?.toString() ?? '-',
+        type: VSDrawerItemType.text,
+      ));
+    }
+
+    VSDrawer.show(
+      context,
+      title: 'Row Details - Row ${index + 1}',
+      items: items,
+      actions: [
+        VSButton(
+          label: 'Close',
+          onPressed: () => Navigator.of(context).pop(),
+          variant: VSButtonVariant.outlined,
+        ),
+      ],
+    );
+  }
+
   Widget buildTableShowcase() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -88,7 +119,7 @@ class _TableDynamicsExampleState extends State<TableDynamicsExample> {
           children: [
             // 1. Basic Table
             Text(
-              '1. Basic Table (No Pagination)',
+              '1. Basic Table (No Pagination) - Click any row to view details',
               style: AppTypography.bodySmallMedium.copyWith(
                 color: AppColors.textSecondary,
               ),
@@ -102,13 +133,14 @@ class _TableDynamicsExampleState extends State<TableDynamicsExample> {
                 currentPage: 1,
                 pageSize: 10,
                 showPagination: false,
+                onRowTap: _showRowDetailDrawer,
               ),
             ),
             const SizedBox(height: 16),
 
             // 2. Table with Sticky Header
             Text(
-              '2. Table with Sticky Header',
+              '2. Table with Sticky Header - Click any row to view details',
               style: AppTypography.bodySmallMedium.copyWith(
                 color: AppColors.textSecondary,
               ),
@@ -125,6 +157,7 @@ class _TableDynamicsExampleState extends State<TableDynamicsExample> {
                   pageSize: 10,
                   showPagination: false,
                   stickyHeader: true,
+                  onRowTap: _showRowDetailDrawer,
                 ),
               ),
             ),
@@ -558,7 +591,7 @@ class _TableDynamicsExampleState extends State<TableDynamicsExample> {
           children: [
             // 1. Simple Table with VsTableDynamic2
             Text(
-              '1. Basic Table (VsTableDynamic2)',
+              '1. Basic Table (VsTableDynamic2) - Click any row to view details',
               style: AppTypography.bodySmallMedium.copyWith(
                 color: AppColors.textSecondary,
               ),
@@ -572,6 +605,7 @@ class _TableDynamicsExampleState extends State<TableDynamicsExample> {
                 currentPage: 1,
                 pageSize: 10,
                 showPagination: false,
+                onRowTap: _showRowDetailDrawer,
               ),
             ),
             const SizedBox(height: 16),
