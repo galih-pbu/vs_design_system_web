@@ -257,7 +257,7 @@ class _TableDynamicsExampleState extends State<TableDynamicsExample> {
 
             // 4. Table with Pagination
             Text(
-              '4. Table with Pagination',
+              '4. Table with Pagination - Click any row to view details',
               style: AppTypography.bodySmallMedium.copyWith(
                 color: AppColors.textSecondary,
               ),
@@ -272,6 +272,7 @@ class _TableDynamicsExampleState extends State<TableDynamicsExample> {
                 pageSize: 5,
                 totalCount: 25,
                 showPagination: true,
+                onRowTap: _showRowDetailDrawer,
                 onPageChange: (page) {
                   VSToastService.showToast(
                     context,
@@ -287,7 +288,7 @@ class _TableDynamicsExampleState extends State<TableDynamicsExample> {
 
             // 5. Compact Table
             Text(
-              '5. Compact Table (Smaller Spacing)',
+              '5. Compact Table (Smaller Spacing) - Click any row to view details',
               style: AppTypography.bodySmallMedium.copyWith(
                 color: AppColors.textSecondary,
               ),
@@ -302,13 +303,14 @@ class _TableDynamicsExampleState extends State<TableDynamicsExample> {
                 pageSize: 10,
                 showPagination: false,
                 compact: true,
+                onRowTap: _showRowDetailDrawer,
               ),
             ),
             const SizedBox(height: 16),
 
             // 6. Wide Table with Horizontal Scroll
             Text(
-              '6. Wide Table with Horizontal Scroll',
+              '6. Wide Table with Horizontal Scroll - Click any row to view details',
               style: AppTypography.bodySmallMedium.copyWith(
                 color: AppColors.textSecondary,
               ),
@@ -325,6 +327,7 @@ class _TableDynamicsExampleState extends State<TableDynamicsExample> {
                     currentPage: 1,
                     pageSize: 10,
                     showPagination: false,
+                    onRowTap: _showRowDetailDrawer,
                   ),
                 ),
               ],
@@ -373,7 +376,7 @@ class _TableDynamicsExampleState extends State<TableDynamicsExample> {
 
             // 8. Table with Auto Width
             Text(
-              '8. Table with Auto Width Columns',
+              '8. Table with Auto Width Columns - Click any row to view details',
               style: AppTypography.bodySmallMedium.copyWith(
                 color: AppColors.textSecondary,
               ),
@@ -388,6 +391,7 @@ class _TableDynamicsExampleState extends State<TableDynamicsExample> {
                 pageSize: 10,
                 showPagination: false,
                 useAutoWidth: true,
+                onRowTap: _showRowDetailDrawer,
               ),
             ),
 
@@ -612,7 +616,7 @@ class _TableDynamicsExampleState extends State<TableDynamicsExample> {
 
             // 2. Table with Sticky Columns
             Text(
-              '2. Table with Sticky Columns (2 columns sticky)',
+              '2. Table with Sticky Columns (2 columns sticky) - Click any row to view details',
               style: AppTypography.bodySmallMedium.copyWith(
                 color: AppColors.textSecondary,
               ),
@@ -627,13 +631,14 @@ class _TableDynamicsExampleState extends State<TableDynamicsExample> {
                 pageSize: 10,
                 showPagination: false,
                 stickyColumns: 2,
+                onRowTap: _showRowDetailDrawer,
               ),
             ),
             const SizedBox(height: 16),
 
             // 3. Table with Sticky Header
             Text(
-              '3. Table with Sticky Header',
+              '3. Table with Sticky Header - Click any row to view details',
               style: AppTypography.bodySmallMedium.copyWith(
                 color: AppColors.textSecondary,
               ),
@@ -648,6 +653,7 @@ class _TableDynamicsExampleState extends State<TableDynamicsExample> {
                 pageSize: 20,
                 showPagination: false,
                 stickyHeader: true,
+                onRowTap: _showRowDetailDrawer,
               ),
             ),
             const SizedBox(height: 16),

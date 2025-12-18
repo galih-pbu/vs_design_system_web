@@ -129,6 +129,24 @@ class _VSTooltipExampleState extends State<VSTooltipExample> {
                           size: VSButtonSize.small,
                         ),
                       ),
+                      VSTooltip(
+                        message: 'This tooltip appears on top-left',
+                        position: VSTooltipPosition.topLeft,
+                        child: VSButton(
+                          label: 'Top-Left',
+                          onPressed: () {},
+                          size: VSButtonSize.small,
+                        ),
+                      ),
+                      VSTooltip(
+                        message: 'This tooltip appears on top-right',
+                        position: VSTooltipPosition.topRight,
+                        child: VSButton(
+                          label: 'Top-Right',
+                          onPressed: () {},
+                          size: VSButtonSize.small,
+                        ),
+                      ),
                     ],
                   ),
                 ],
@@ -655,6 +673,192 @@ class _VSTooltipExampleState extends State<VSTooltipExample> {
 
         SizedBox(height: AppSpacing.lg),
 
+        // Advanced Tooltip Variants
+        _buildTooltipGroup(
+          title: 'Advanced Tooltip Variants',
+          description: 'Rich content and approval list tooltips with positioned arrows',
+          children: [
+            // Rich Content Tooltips with Arrows
+            Container(
+              padding: EdgeInsets.all(AppSpacing.md),
+              decoration: BoxDecoration(
+                color: AppColors.neutral100,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Rich Content Tooltips',
+                    style: AppTypography.bodyMediumSemibold,
+                  ),
+                  SizedBox(height: AppSpacing.md),
+                  Wrap(
+                    spacing: AppSpacing.lg,
+                    runSpacing: AppSpacing.md,
+                    children: [
+                      VSTooltip(
+                        title: 'Advanced Settings',
+                        items: [
+                          VSTooltipItem(label: 'General Preferences', onTap: () {}),
+                          VSTooltipItem(label: 'Notification Settings', onTap: () {}),
+                          VSTooltipItem(label: 'Privacy Options', onTap: () {}),
+                        ],
+                        position: VSTooltipPosition.top,
+                        variant: VSTooltipVariant.withContent,
+                        child: VSButton(
+                          label: 'Settings',
+                          onPressed: () {},
+                          size: VSButtonSize.small,
+                          variant: VSButtonVariant.outlined,
+                        ),
+                      ),
+                      VSTooltip(
+                        title: 'Export Options',
+                        items: [
+                          VSTooltipItem(label: 'Export as PDF', onTap: () {}),
+                          VSTooltipItem(label: 'Export as CSV', onTap: () {}),
+                          VSTooltipItem(label: 'Export as Excel', onTap: () {}),
+                        ],
+                        position: VSTooltipPosition.topLeft,
+                        variant: VSTooltipVariant.withContent,
+                        child: VSButton(
+                          label: 'Export',
+                          onPressed: () {},
+                          size: VSButtonSize.small,
+                          variant: VSButtonVariant.secondary,
+                        ),
+                      ),
+                      VSTooltip(
+                        title: 'Share Document',
+                        items: [
+                          VSTooltipItem(label: 'Share via Email', onTap: () {}),
+                          VSTooltipItem(label: 'Generate Link', onTap: () {}),
+                          VSTooltipItem(label: 'Copy to Clipboard', onTap: () {}),
+                        ],
+                        position: VSTooltipPosition.topRight,
+                        variant: VSTooltipVariant.withContent,
+                        child: IconButton(
+                          icon: Icon(Icons.share),
+                          onPressed: () {},
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+
+            SizedBox(height: AppSpacing.md),
+
+            // Approval List Tooltips with Arrows
+            Container(
+              padding: EdgeInsets.all(AppSpacing.md),
+              decoration: BoxDecoration(
+                color: AppColors.neutral100,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Approval List Tooltips',
+                    style: AppTypography.bodyMediumSemibold,
+                  ),
+                  SizedBox(height: AppSpacing.md),
+                  Wrap(
+                    spacing: AppSpacing.lg,
+                    runSpacing: AppSpacing.md,
+                    children: [
+                      VSTooltip(
+                        title: 'Document Approvals',
+                        approvalItems: [
+                          VSTooltipApprovalItem(
+                            name: 'John Smith',
+                            initial: 'JS',
+                            avatarColor: AppColors.primaryDefault,
+                            isApproved: true,
+                            timestamp: '2h ago',
+                          ),
+                          VSTooltipApprovalItem(
+                            name: 'Sarah Johnson',
+                            initial: 'SJ',
+                            avatarColor: AppColors.successDefault,
+                            isApproved: true,
+                            timestamp: '1h ago',
+                          ),
+                          VSTooltipApprovalItem(
+                            name: 'Mike Wilson',
+                            initial: 'MW',
+                            avatarColor: AppColors.warningDefault,
+                            isApproved: false,
+                          ),
+                        ],
+                        position: VSTooltipPosition.top,
+                        variant: VSTooltipVariant.approvalList,
+                        child: VSBadge(
+                          label: '2/3 Approved',
+                          variant: VSBadgeVariant.warning,
+                        ),
+                      ),
+                      VSTooltip(
+                        title: 'Team Review Status',
+                        approvalItems: [
+                          VSTooltipApprovalItem(
+                            name: 'Alice Brown',
+                            initial: 'AB',
+                            avatarColor: AppColors.secondaryDefault,
+                            isApproved: true,
+                            timestamp: '30m ago',
+                          ),
+                          VSTooltipApprovalItem(
+                            name: 'Bob Davis',
+                            initial: 'BD',
+                            avatarColor: AppColors.primaryDefault,
+                            isApproved: true,
+                            timestamp: '15m ago',
+                          ),
+                        ],
+                        position: VSTooltipPosition.topLeft,
+                        variant: VSTooltipVariant.approvalList,
+                        child: VSBadge(
+                          label: 'Approved',
+                          variant: VSBadgeVariant.success,
+                        ),
+                      ),
+                      VSTooltip(
+                        title: 'Pending Reviews',
+                        approvalItems: [
+                          VSTooltipApprovalItem(
+                            name: 'Emma Taylor',
+                            initial: 'ET',
+                            avatarColor: AppColors.warningDefault,
+                            isApproved: false,
+                          ),
+                          VSTooltipApprovalItem(
+                            name: 'David Lee',
+                            initial: 'DL',
+                            avatarColor: AppColors.neutral600,
+                            isApproved: false,
+                          ),
+                        ],
+                        position: VSTooltipPosition.topRight,
+                        variant: VSTooltipVariant.approvalList,
+                        child: VSBadge(
+                          label: 'Pending',
+                          variant: VSBadgeVariant.neutral,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+
+        SizedBox(height: AppSpacing.lg),
+
         // Interactive Demo
         _buildTooltipGroup(
           title: 'Interactive Demo',
@@ -688,7 +892,7 @@ class _VSTooltipExampleState extends State<VSTooltipExample> {
                           SizedBox(height: AppSpacing.xs),
                           Wrap(
                             spacing: AppSpacing.xs,
-                            children: ['top', 'bottom', 'left', 'right'].map((pos) => VSButton(
+                            children: ['top', 'topLeft', 'topRight', 'bottom', 'left', 'right'].map((pos) => VSButton(
                               label: pos,
                               onPressed: () => setState(() => _selectedPosition = pos),
                               size: VSButtonSize.small,
@@ -717,7 +921,7 @@ class _VSTooltipExampleState extends State<VSTooltipExample> {
                         ),
                         SizedBox(height: AppSpacing.md),
                         VSTooltip(
-                          message: 'This is a ${_selectedPosition} positioned tooltip with dynamic configuration!',
+                          message: 'This is a $_selectedPosition positioned tooltip with dynamic configuration!',
                           position: _getPositionFromString(_selectedPosition),
                           child: VSButton(
                             label: 'Test Tooltip',
@@ -773,6 +977,10 @@ class _VSTooltipExampleState extends State<VSTooltipExample> {
     switch (position) {
       case 'top':
         return VSTooltipPosition.top;
+      case 'topLeft':
+        return VSTooltipPosition.topLeft;
+      case 'topRight':
+        return VSTooltipPosition.topRight;
       case 'bottom':
         return VSTooltipPosition.bottom;
       case 'left':

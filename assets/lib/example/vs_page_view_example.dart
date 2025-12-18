@@ -419,21 +419,26 @@ class _VSPageViewExampleState extends State<VSPageViewExample> {
                 ],
               ),
               tableContent: _buildSampleTable(context),
-              footer: Container(
-                padding: EdgeInsets.all(AppSpacing.md),
-                color: AppColors.neutral100,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      '© 2025 VS Design System',
-                      style: AppTypography.bodySmallRegular.copyWith(
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+            ),
+          ),
+        ),
+
+        SizedBox(height: AppSpacing.lg),
+
+        // Page View with Row Tap
+        _buildPageViewGroup(
+          title: 'Page View with Row Tap',
+          description: 'Page view demonstrating row click functionality with drawer display',
+          child: Container(
+            height: 400,
+            decoration: BoxDecoration(
+              border: Border.all(color: AppColors.neutral300),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: VSPageView(
+              isMobile: false,
+              title: 'Interactive Page View',
+              tableContent: _buildSampleTableWithRowTap(context),
             ),
           ),
         ),
@@ -475,6 +480,58 @@ class _VSPageViewExampleState extends State<VSPageViewExample> {
       currentPage: 1,
       pageSize: 10,
       showPagination: true,
+      onPageChange: (page) {
+        VSToastService.showToast(
+          context,
+          title: 'Page Changed',
+          description: 'Navigated to page $page',
+          type: VSToastType.info,
+        );
+      },
+      // Remove onSearchChanged to prevent duplicate search bars
+    );
+  }
+
+  Widget _buildSampleTableWithRowTap(BuildContext context) {
+    return VsTableDynamic(
+      tableWidth: double.infinity, // Use full width
+      useAutoWidth: true, // Enable auto width for full expansion
+      tableData: _createSampleTableData(),
+      totalCount: 25, // Total count for pagination
+      currentPage: 1,
+      pageSize: 10,
+      showPagination: true,
+      onRowTap: (index) {
+        final tableData = _createSampleTableData();
+        if (tableData.detail == null || index >= tableData.detail!.length) return;
+
+        final rowData = tableData.detail![index];
+
+        final items = <VSDrawerItem>[];
+        for (int i = 0; i < rowData.rowData.length; i++) {
+          final cell = rowData.rowData[i];
+          final header = tableData.header[i];
+          items.add(VSDrawerItem(
+            label: header.label,
+            hint: cell.data?.toString() ?? '-',
+            type: VSDrawerItemType.text,
+          ));
+        }
+
+        VSDrawer.show(
+          context,
+          title: 'Row Details - Row ${index + 1}',
+          items: items,
+          actions: [
+            VSButton(
+              label: 'Close',
+              size: VSButtonSize.small,
+              onPressed: () => Navigator.of(context).pop(),
+              variant: VSButtonVariant.outlined,
+            ),
+          ],
+        );
+      },
       onPageChange: (page) {
         VSToastService.showToast(
           context,

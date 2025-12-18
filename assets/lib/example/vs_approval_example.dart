@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vs_design_system/vs_design_system.dart';
 import 'package:vs_design_system/shared/models/drop_down_obj_model.dart';
 import 'package:vs_design_system/vs_design_system.dart';
 
@@ -20,6 +21,12 @@ class _VSApprovalExampleState extends State<VSApprovalExample> {
   bool _isStatusFilterActive = false;
   bool _isAmountFilterActive = false;
   bool _isDateFilterActive = false;
+
+  // Reject reason controllers
+  final Map<String, TextEditingController> rejectReasonControllers = {};
+
+  // Approval loading states
+  final Map<String, bool> approvalLoading = {};
 
   // Sample approval data
   final List<Map<String, dynamic>> approvalData = [
@@ -391,7 +398,8 @@ class _VSApprovalExampleState extends State<VSApprovalExample> {
           currentPage = 1; // Reset to first page when searching
         });
       },
-      tabs: const ['Admin Fee', 'Fine'],
+      tabs: const ['Biaya admin', 'Follow up denda'],
+      status: 0,
       tabbarOnTap: (index) {
         setState(() {
           selectedTab.value = index;
@@ -419,7 +427,8 @@ class _VSApprovalExampleState extends State<VSApprovalExample> {
             title: 'Category',
             lsItemNotifier: categoryNotifier,
             isMultiSelect: true,
-          ),          VSDateRangeFilterMenuItem(
+          ),
+          VSDateRangeFilterMenuItem(
             icon: VSIcon(name: VSIcons.calendar, size: 16),
             title: 'Created Date',
             initialDateRange: DateTimeRange(
@@ -428,14 +437,15 @@ class _VSApprovalExampleState extends State<VSApprovalExample> {
             ),
             startDate: DateTime(2020),
             endDate: DateTime(2030),
-          ),        ],
+          ),
+        ],
       ),
       tableContent: Column(
         children: [
           // Header Content
           Padding(
             padding: const EdgeInsets.all(16),
-            child: VSHeaderContent(
+            child: VSApprovalHeader(
               total: filteredData.length,
               adminFeeCount: filteredData
                   .where((item) => item['type'] == 'admin_fee')
@@ -448,6 +458,34 @@ class _VSApprovalExampleState extends State<VSApprovalExample> {
             ),
           ),
 
+          // Tab View
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: VSApprovalTab(
+              selectedTab: selectedTab,
+              action: VSButton(
+                label: 'History Permintaan',
+                leftIcon: Icons.history,
+                onPressed: () {
+                  VSToastService.showToast(
+                    context,
+                    title: 'History',
+                    description: 'History permintaan akan ditampilkan',
+                    type: VSToastType.info,
+                  );
+                },
+                size: VSButtonSize.small,
+                variant: VSButtonVariant.outlined,
+              ),
+              onTabChanged: (index) {
+                setState(() {
+                  selectedTab.value = index;
+                  currentPage = 1; // Reset to first page when changing tabs
+                });
+              },
+            ),
+          ),
+
           // Approval Items List
           Expanded(
             child: ListView.builder(
@@ -455,169 +493,13 @@ class _VSApprovalExampleState extends State<VSApprovalExample> {
               itemCount: paginatedData.length,
               itemBuilder: (context, index) {
                 final item = paginatedData[index];
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: const Color(0xFFF5F8FD),
-                        borderRadius: BorderRadius.circular(4)),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        spacing: 8,
-                        children: [
-                          Text(
-                            item['doc_number'] as String,
-                            style: AppTypography.bodySmallBold,
-                          ),
-                          Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(color: AppColors.neutral300),
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(4),
-                              child: ExpansionTile(
-                                tilePadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
-                                maintainState: true,
-                                title: Row(
-                                  children: [
-                                    const SizedBox(
-                                        height: 40,
-                                        child: VerticalDivider(
-                                          color: Color(0xFF1177FF),
-                                          thickness: 2,
-                                        )),
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          item['title'] as String,
-                                          style: AppTypography.bodySmallBold.copyWith(
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                        Text(
-                                          item['id'] as String,
-                                          style: AppTypography.bodySmallRegular.copyWith(
-                                            color: AppColors.neutral600,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                                backgroundColor: Colors.white,
-                                collapsedBackgroundColor: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(4)),
-                                children: [
-                                  Container(
-                                    height: 1,
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey[300],
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withValues(alpha: 0.2),
-                                          offset: const Offset(0, 2),
-                                          blurRadius: 4,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          item['description'] as String,
-                                          style: AppTypography.bodySmallRegular,
-                                        ),
-                                        SizedBox(height: AppSpacing.sm),
-                                        Row(
-                                          children: [
-                                            Icon(
-                                              Icons.calendar_today,
-                                              size: 16,
-                                              color: AppColors.neutral600,
-                                            ),
-                                            SizedBox(width: AppSpacing.xs),
-                                            Text(
-                                              'Date: ${item['date']}',
-                                              style: AppTypography.bodySmallRegular.copyWith(
-                                                color: AppColors.neutral600,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(height: AppSpacing.sm),
-                                        Row(
-                                          children: [
-                                            Icon(
-                                              Icons.attach_money,
-                                              size: 16,
-                                              color: AppColors.neutral600,
-                                            ),
-                                            SizedBox(width: AppSpacing.xs),
-                                            Text(
-                                              'Amount: Rp ${item['amount'].toInt().toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
-                                              style: AppTypography.bodySmallRegular.copyWith(
-                                                color: AppColors.neutral600,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(height: AppSpacing.md),
-                                        Row(
-                                          children: [
-                                            if (item['status'] == 'SUBMITTED') ...[
-                                              VSButton(
-                                                label: 'Approve',
-                                                onPressed: () =>
-                                                    _handleApproval(item, 'APPROVED'),
-                                                size: VSButtonSize.small,
-                                                variant: VSButtonVariant.primary,
-                                              ),
-                                              SizedBox(width: AppSpacing.sm),
-                                              VSButton(
-                                                label: 'Reject',
-                                                onPressed: () =>
-                                                    _handleApproval(item, 'REJECTED'),
-                                                size: VSButtonSize.small,
-                                                variant: VSButtonVariant.danger,
-                                              ),
-                                            ],
-                                          ],
-                                        ),
-                                        Align(
-                                          alignment: Alignment.centerRight,
-                                          child: InkWell(
-                                            onTap: () => _showDetailDialog(context, item),
-                                            child: Text(
-                                              "Lihat detail",
-                                              style: AppTypography.bodySmallBold.copyWith(
-                                                  color: const Color(0xFF5B8BD6),
-                                                  fontWeight: FontWeight.w500,
-                                                  decoration: TextDecoration.underline,
-                                                  decorationColor: const Color(0xFF5B8BD6),
-                                                  decorationThickness: 2),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                rejectReasonControllers.putIfAbsent(item['id'], () => TextEditingController());
+                return VSApprovalCard(
+                  item: item,
+                  onApproval: _handleApproval,
+                  onShowDetail: _showDetailDialog,
+                  rejectReasonController: rejectReasonControllers[item['id']],
+                  isLoading: approvalLoading[item['id']] ?? false,
                 );
               },
             ),
@@ -670,13 +552,21 @@ class _VSApprovalExampleState extends State<VSApprovalExample> {
     );
   }
 
-  void _handleApproval(Map<String, dynamic> item, String newStatus) {
+  void _handleApproval(Map<String, dynamic> item, String newStatus) async {
+    setState(() {
+      approvalLoading[item['id']] = true;
+    });
+
+    // Simulate API call delay
+    await Future.delayed(const Duration(seconds: 1));
+
     setState(() {
       final index = approvalData.indexWhere((data) => data['id'] == item['id']);
       if (index != -1) {
         approvalData[index]['status'] = newStatus;
         approvalData[index]['approval_status'] = newStatus;
       }
+      approvalLoading.remove(item['id']);
     });
 
     VSToastService.showToast(
@@ -688,63 +578,96 @@ class _VSApprovalExampleState extends State<VSApprovalExample> {
   }
 
   void _showDetailDialog(BuildContext context, Map<String, dynamic> item) {
-    showDialog(
-      context: context,
-      builder: (context) => VSDialog(
-        type: VSDialogType.summary,
-        title: 'Approval Details',
-        message: '',
-        content: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('ID: ${item['id']}', style: AppTypography.bodySmallBold),
-            SizedBox(height: AppSpacing.sm),
-            Text(
-              'Title: ${item['title']}',
-              style: AppTypography.bodySmallBold,
-            ),
-            SizedBox(height: AppSpacing.sm),
-            Text(
-              'Description: ${item['description']}',
-              style: AppTypography.bodySmallBold,
-            ),
-            SizedBox(height: AppSpacing.sm),
-            Text(
-              'Amount: Rp ${item['amount'].toInt().toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
-              style: AppTypography.bodySmallBold,
-            ),
-            SizedBox(height: AppSpacing.sm),
-            Text(
-              'Status: ${item['status']}',
-              style: AppTypography.bodySmallBold,
-            ),
-            SizedBox(height: AppSpacing.sm),
-            Text(
-              'Date: ${item['date']}',
-              style: AppTypography.bodySmallBold,
-            ),
-          ],
+    final items = <VSDrawerItem>[
+      VSDrawerItem(
+        label: 'ID',
+        hint: item['id'],
+        type: VSDrawerItemType.text,
+        onChanged: (value) => VSToastService.showToast(
+          context,
+          title: 'ID Changed',
+          description: 'New value: $value',
+          type: VSToastType.info,
         ),
-        actions: [
-          VSDialogAction(
-            label: 'Close',
-            onPressed: () => VSToastService.showToast(
-              context,
-              title: 'Dialog Closed',
-              description: 'Approval details dialog has been closed',
-              type: VSToastType.info,
-            ),
-            variant: VSButtonVariant.secondary,
-          ),
-        ],
       ),
+      VSDrawerItem(
+        label: 'Title',
+        hint: item['title'],
+        type: VSDrawerItemType.text,
+        onChanged: (value) => VSToastService.showToast(
+          context,
+          title: 'Title Changed',
+          description: 'New value: $value',
+          type: VSToastType.info,
+        ),
+      ),
+      VSDrawerItem(
+        label: 'Description',
+        hint: item['description'],
+        type: VSDrawerItemType.text,
+        onChanged: (value) => VSToastService.showToast(
+          context,
+          title: 'Description Changed',
+          description: 'New value: $value',
+          type: VSToastType.info,
+        ),
+      ),
+      VSDrawerItem(
+        label: 'Amount',
+        hint: 'Rp ${item['amount'].toInt().toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
+        type: VSDrawerItemType.text,
+        onChanged: (value) => VSToastService.showToast(
+          context,
+          title: 'Amount Changed',
+          description: 'New value: $value',
+          type: VSToastType.info,
+        ),
+      ),
+      VSDrawerItem(
+        label: 'Status',
+        hint: item['status'],
+        type: VSDrawerItemType.text,
+        onChanged: (value) => VSToastService.showToast(
+          context,
+          title: 'Status Changed',
+          description: 'New value: $value',
+          type: VSToastType.info,
+        ),
+      ),
+      VSDrawerItem(
+        label: 'Date',
+        hint: item['date'],
+        type: VSDrawerItemType.text,
+        onChanged: (value) => VSToastService.showToast(
+          context,
+          title: 'Date Changed',
+          description: 'New value: $value',
+          type: VSToastType.info,
+        ),
+      ),
+    ];
+
+    VSDrawer.show(
+      context,
+      title: 'Approval Details',
+      items: items,
+      actions: [
+        VSButton(
+          label: 'Close',
+          size: VSButtonSize.small,
+          onPressed: () => Navigator.of(context).pop(),
+          variant: VSButtonVariant.outlined,
+        ),
+      ],
     );
   }
 
   @override
   void dispose() {
     searchController.dispose();
+    for (final controller in rejectReasonControllers.values) {
+      controller.dispose();
+    }
     super.dispose();
   }
 }

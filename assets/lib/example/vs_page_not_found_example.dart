@@ -523,6 +523,7 @@ class _VSPageNotFoundExampleState extends State<VSPageNotFoundExample> {
                       Container(
                         height: 300,
                         width: 200,
+                        padding: EdgeInsets.symmetric(horizontal: AppSpacing.sm),
                         decoration: BoxDecoration(
                           color: AppColors.neutral0,
                           borderRadius: BorderRadius.circular(20),
